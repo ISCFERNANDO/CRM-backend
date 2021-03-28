@@ -23,9 +23,7 @@ function haltOnTimedout(req: any, res: any, next: any) {
     if (!req.timedout) next();
 }
 
-app.get('/', (req: any, res: any) => {
-    res.send({ message: 'Hello world with typescript' });
-});
+app.use(require('./routes'));
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`App listening on PORT ${port}`));
