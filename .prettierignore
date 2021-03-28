@@ -1,0 +1,10 @@
+/.scannerwork
+/cfg
+/node_modules
+/coverage
+/dist
+/e2e
+package.json
+package-lock.json
+*md
+.*
