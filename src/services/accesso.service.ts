@@ -1,36 +1,72 @@
+import { NextFunction } from 'express';
 import { AccessDTO } from 'src/dto/access.dto';
+import HttpException from '../common/http.exception';
 import * as accessRepository from '../repositories/accesso.repository';
+import { Messages } from './../constants/messages';
 
-const getAllAccess = async function (): Promise<AccessDTO[]> {
-    const access = await accessRepository.getAllAccess();
-    return access.map(mapAccess);
-};
-
-const addAccess = async function (contract: AccessDTO): Promise<AccessDTO> {
-    const data = await accessRepository.addAccess(contract);
-    contract.id = data._id;
-    return contract;
-};
-
-const updateAccess = async function (contract: AccessDTO): Promise<AccessDTO> {
-    const data = await accessRepository.updateAccess(contract);
-    if (!data) {
-        //TODO: lanzar exception
-        throw new Error('No se actualizó la información');
+const getAllAccess = async function (
+    next: NextFunction
+): Promise<AccessDTO[] | void> {
+    try {
+        const access = await accessRepository.getAllAccess();
+        return access.map(mapAccess);
+    } catch (error) {
+        next(new HttpException(500, Messages.GET_ACCESS_ERROR));
     }
-    contract.id = data._id;
-    return contract;
 };
 
-const deleteAccess = async function (id: string): Promise<boolean> {
-    const data = await accessRepository.deleteAccess(id);
-    console.log(data);
-    return true;
+const addAccess = async function (
+    contract: AccessDTO,
+    next: NextFunction
+): Promise<AccessDTO | void> {
+    try {
+        const data = await accessRepository.addAccess(contract);
+        contract.id = data._id;
+        return contract;
+    } catch (error) {
+        next(new HttpException(500, Messages.ADD_ACCESS_ERROR));
+    }
 };
 
-const findAccessById = async function (id: string): Promise<AccessDTO> {
-    const data = await accessRepository.findById(id);
-    return mapAccess(data);
+const updateAccess = async function (
+    contract: AccessDTO,
+    next: NextFunction
+): Promise<AccessDTO | void> {
+    try {
+        const data = await accessRepository.updateAccess(contract);
+        if (!data) {
+            next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+            return;
+        }
+        contract.id = data._id;
+        return contract;
+    } catch (error) {
+        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+    }
+};
+
+const deleteAccess = async function (
+    id: string,
+    next: NextFunction
+): Promise<boolean | void> {
+    try {
+        await accessRepository.deleteAccess(id);
+        return true;
+    } catch (error) {
+        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+    }
+};
+
+const findAccessById = async function (
+    id: string,
+    next: NextFunction
+): Promise<AccessDTO | void> {
+    try {
+        const data = await accessRepository.findById(id);
+        return mapAccess(data);
+    } catch (error) {
+        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+    }
 };
 
 function mapAccess(item: any): AccessDTO {

@@ -5,6 +5,8 @@ import * as timeout from 'connect-timeout';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as morgan from 'morgan';
+import { errorHandler } from './middlewares/error.middleware';
+import { notFoundHandler } from './middlewares/not-found.middleware';
 import routes from './routes';
 
 const app = express();
@@ -20,15 +22,16 @@ app.use(
 app.use(timeout('10s'));
 app.use(haltOnTimedout);
 
-function haltOnTimedout(req: any, res: any, next: any) {
-    if (!req.timedout) next();
-}
-
-/* mongoose.connect('mongodb://localhost/db_crm', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}); */
+//rutas
 app.use(routes);
+
+//middlewares
+app.use(errorHandler);
+app.use(notFoundHandler);
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`App listening on PORT ${port}`));
+
+function haltOnTimedout(req: any, res: any, next: any) {
+    if (!req.timedout) next();
+}

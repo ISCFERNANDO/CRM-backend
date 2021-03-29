@@ -22,6 +22,11 @@
     //"allowSyntheticDefaultImports": true,
     "lib": [
       "es2015",
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
 }
