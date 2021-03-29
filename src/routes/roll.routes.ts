@@ -8,7 +8,7 @@ import {
 
 const accesoRoute = Router();
 accesoRoute
-    .route('/rolls')
+    .route('/v1/rolls')
     .get(getAllRolls)
     .post(addRoll)
     .put(updateRoll)

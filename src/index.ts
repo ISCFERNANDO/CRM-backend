@@ -23,7 +23,7 @@ app.use(timeout('10s'));
 app.use(haltOnTimedout);
 
 //rutas
-app.use(routes);
+app.use('/crm-api', routes);
 
 //middlewares
 app.use(errorHandler);

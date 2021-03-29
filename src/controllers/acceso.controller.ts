@@ -1,12 +1,12 @@
-import { NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AccessDTO } from 'src/dto/access.dto';
 import responseHandler from '../common/response-handler';
 import { Messages } from '../constants/messages';
 import * as accessService from '../services/accesso.service';
 
 const getAllAccess = async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> {
     const data = await accessService.getAllAccess(next);
@@ -14,8 +14,8 @@ const getAllAccess = async function (
 };
 
 const addAccess = async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> {
     const requestBody: AccessDTO = req.body;
@@ -24,8 +24,8 @@ const addAccess = async function (
 };
 
 const updateAccess = async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> {
     const requestBody: AccessDTO = req.body;
@@ -35,8 +35,8 @@ const updateAccess = async function (
 };
 
 const deleteAccess = async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> {
     const { id } = req.params;
@@ -45,8 +45,8 @@ const deleteAccess = async function (
 };
 
 const findById = async function (
-    req: any,
-    res: any,
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> {
     const { id } = req.params;

@@ -6,5 +6,6 @@ export enum Messages {
     DELETE_ACCESS_OK = 'El acceso de eliminó correctamente',
     GET_ACCESS_ERROR = 'Ocurrió un error al obtener los accesos',
     ADD_ACCESS_ERROR = 'Ocurrió un error al agregar el acceso',
-    ACCESS_NOT_FOUND = 'No se encontró el acceso'
+    ACCESS_NOT_FOUND = 'No se encontró el acceso',
+    BAD_REQUEST = 'Error en la petición'
 }

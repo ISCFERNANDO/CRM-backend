@@ -6,13 +6,17 @@ import {
     getAllAccess,
     updateAccess
 } from '../controllers/acceso.controller';
+import createAccessvalidator from '../validators/create-acceso.validator';
 
 const accesoRoute = Router();
-accesoRoute.route('/access').get(getAllAccess).post(addAccess);
 accesoRoute
-    .route('/access/:id')
+    .route('/v1/access')
+    .get(getAllAccess)
+    .post(createAccessvalidator, addAccess);
+accesoRoute
+    .route('/v1/access/:id')
     .get(findById)
-    .put(updateAccess)
+    .put(createAccessvalidator, updateAccess)
     .delete(deleteAccess);
 
 export default accesoRoute;

@@ -19,7 +19,7 @@
     "module": "commonjs",
     "strictPropertyInitialization": false,
     "strictBindCallApply": false,
-    //"allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "lib": [
       "es2015",
     ],
