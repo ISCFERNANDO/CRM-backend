@@ -1,14 +1,15 @@
 require('dotenv/config');
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const compression = require('compression');
-const morgan = require('morgan');
-const timeout = require('connect-timeout');
+import { json, urlencoded } from 'body-parser';
+import * as compression from 'compression';
+import * as timeout from 'connect-timeout';
+import * as cors from 'cors';
+import * as express from 'express';
+import * as morgan from 'morgan';
+import routes from './routes';
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cors());
 app.use(compression());
 app.use(
@@ -23,7 +24,11 @@ function haltOnTimedout(req: any, res: any, next: any) {
     if (!req.timedout) next();
 }
 
-app.use(require('./routes'));
+/* mongoose.connect('mongodb://localhost/db_crm', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}); */
+app.use(routes);
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`App listening on PORT ${port}`));

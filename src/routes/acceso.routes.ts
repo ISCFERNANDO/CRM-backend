@@ -1,18 +1,18 @@
-const route = require('express').Router();
+import { Router } from 'express';
+import {
+    addAccess,
+    deleteAccess,
+    findById,
+    getAllAccess,
+    updateAccess
+} from '../controllers/acceso.controller';
 
-route
-    .route('/accesos')
-    .get((req: any, res: any) => {
-        res.send({ message: 'Lista accesos' });
-    })
-    .post((req: any, res: any) => {
-        res.send({ message: 'Alta acceso' });
-    })
-    .put((req: any, res: any) => {
-        res.send({ message: 'Modificacion acceso' });
-    })
-    .delete((req: any, res: any) => {
-        res.send({ message: 'Eliminacion acceso' });
-    });
+const accesoRoute = Router();
+accesoRoute.route('/access').get(getAllAccess).post(addAccess);
+accesoRoute
+    .route('/access/:id')
+    .get(findById)
+    .put(updateAccess)
+    .delete(deleteAccess);
 
-module.exports = route;
+export default accesoRoute;

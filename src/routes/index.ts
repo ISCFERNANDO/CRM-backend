@@ -1,5 +1,9 @@
-const router = require('express').Router();
+import { Router } from 'express';
+import accesoRoutes from './acceso.routes';
+import rollRoutes from './roll.routes';
+const routes = Router();
 
-router.use(require('./acceso.routes'));
+routes.use(accesoRoutes);
+routes.use(rollRoutes);
 
-module.exports = router;
+export default routes;
