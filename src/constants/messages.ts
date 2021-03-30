@@ -7,5 +7,6 @@ export enum Messages {
     GET_ACCESS_ERROR = 'Ocurrió un error al obtener los accesos',
     ADD_ACCESS_ERROR = 'Ocurrió un error al agregar el acceso',
     ACCESS_NOT_FOUND = 'No se encontró el acceso',
-    BAD_REQUEST = 'Error en la petición'
+    BAD_REQUEST = 'Error en la petición',
+    PARAM_NOT_ARRAY = 'El parámetro debe ser un arreglo'
 }

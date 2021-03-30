@@ -21,4 +21,16 @@ const findById = async function (id: string): Promise<any> {
     return accessModel.findById(id);
 };
 
-export { getAllAccess, addAccess, updateAccess, deleteAccess, findById };
+const deleteByIds = async function (ids: string[]): Promise<any> {
+    const promises = ids.map((item) => deleteAccess(item));
+    return Promise.all(promises);
+};
+
+export {
+    getAllAccess,
+    addAccess,
+    updateAccess,
+    deleteAccess,
+    findById,
+    deleteByIds
+};

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
     addAccess,
     deleteAccess,
+    deleteAccessess,
     findById,
     getAllAccess,
     updateAccess
@@ -12,7 +13,8 @@ const accesoRoute = Router();
 accesoRoute
     .route('/v1/access')
     .get(getAllAccess)
-    .post(createAccessvalidator, addAccess);
+    .post(createAccessvalidator, addAccess)
+    .delete(deleteAccessess);
 accesoRoute
     .route('/v1/access/:id')
     .get(findById)

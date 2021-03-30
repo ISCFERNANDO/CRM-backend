@@ -69,6 +69,18 @@ const findAccessById = async function (
     }
 };
 
+const deleteAccessesByIds = async function (
+    ids: string[],
+    next: NextFunction
+): Promise<boolean | void> {
+    try {
+        await accessRepository.deleteByIds(ids);
+        return true;
+    } catch (error) {
+        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+    }
+};
+
 function mapAccess(item: any): AccessDTO {
     return {
         id: item._id,
@@ -79,4 +91,11 @@ function mapAccess(item: any): AccessDTO {
     };
 }
 
-export { getAllAccess, addAccess, updateAccess, deleteAccess, findAccessById };
+export {
+    getAllAccess,
+    addAccess,
+    updateAccess,
+    deleteAccess,
+    findAccessById,
+    deleteAccessesByIds
+};
