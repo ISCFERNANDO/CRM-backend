@@ -77,6 +77,7 @@ const deleteAccessesByIds = async function (
         await accessRepository.deleteByIds(ids);
         return true;
     } catch (error) {
+        console.log(error);
         next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
     }
 };

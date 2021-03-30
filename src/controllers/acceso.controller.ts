@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { AccessDTO } from 'src/dto/access.dto';
-import HttpException from '../common/http.exception';
 import responseHandler from '../common/response-handler';
 import { Messages } from '../constants/messages';
 import * as accessService from '../services/accesso.service';
@@ -60,12 +59,9 @@ const deleteAccessess = async function (
     res: Response,
     next: NextFunction
 ): Promise<void> {
-    const ids: any = req.query.ids;
-    if (!Array.isArray(ids)) {
-        next(new HttpException(404, Messages.PARAM_NOT_ARRAY));
-        return;
-    }
-    const data = await accessService.deleteAccessesByIds(ids, next);
+    const ids: string = req.query.ids as string;
+    const items: string[] = ids.split(',').map((item) => item.trim());
+    const data = await accessService.deleteAccessesByIds(items, next);
     responseHandler(res, Messages.DELETE_ACCESS_OK, data);
 };
 

@@ -11,7 +11,7 @@ import routes from './routes';
 
 const app = express();
 app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(urlencoded({ extended: true }));
 app.use(cors());
 app.use(compression());
 app.use(
