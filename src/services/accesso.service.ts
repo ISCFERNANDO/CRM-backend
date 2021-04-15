@@ -98,5 +98,6 @@ export {
     updateAccess,
     deleteAccess,
     findAccessById,
-    deleteAccessesByIds
+    deleteAccessesByIds,
+    mapAccess
 };

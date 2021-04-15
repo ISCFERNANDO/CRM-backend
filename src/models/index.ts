@@ -1,4 +1,4 @@
-import accessModel from './access.model';
-import rolModel from './rol.model';
+import AccessModel from './access.model';
+import RolModel from './rol.model';
 
-export { accessModel, rolModel };
+export { AccessModel, RolModel };

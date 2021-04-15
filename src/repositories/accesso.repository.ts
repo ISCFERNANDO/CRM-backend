@@ -1,29 +1,33 @@
-import { accessModel } from '../models';
+import { AccessModel } from '../models';
 import { AccessDTO } from './../dto/access.dto';
 
 const getAllAccess = async function (): Promise<Array<any>> {
-    return accessModel.where({ deleted: false });
+    return AccessModel.where({ deleted: false });
 };
 
 const addAccess = async function (contract: AccessDTO): Promise<any> {
-    return accessModel.create({ ...contract, deleted: false });
+    return AccessModel.create({ ...contract, deleted: false });
 };
 
 const updateAccess = async function (contract: AccessDTO): Promise<any> {
-    return accessModel.findByIdAndUpdate(contract.id, contract);
+    return AccessModel.findByIdAndUpdate(contract.id, contract);
 };
 
 const deleteAccess = async function (id: string): Promise<any> {
-    return accessModel.findByIdAndUpdate(id, { deleted: true });
+    return AccessModel.findByIdAndUpdate(id, { deleted: true });
 };
 
 const findById = async function (id: string): Promise<any> {
-    return accessModel.findById(id);
+    return AccessModel.findById(id).where({ deleted: false });
 };
 
 const deleteByIds = async function (ids: string[]): Promise<any> {
     const promises = ids.map((item) => deleteAccess(item));
     return Promise.all(promises);
+};
+
+const findIfNotInIds = async function (ids: string[]): Promise<any> {
+    return AccessModel.where({ _id: { $nin: ids } });
 };
 
 export {
@@ -32,5 +36,6 @@ export {
     updateAccess,
     deleteAccess,
     findById,
-    deleteByIds
+    deleteByIds,
+    findIfNotInIds
 };
