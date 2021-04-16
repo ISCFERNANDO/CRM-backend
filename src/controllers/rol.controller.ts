@@ -65,4 +65,23 @@ const deleteRolls = async function (
     responseHandler(res, Messages.DELETE_ROLL_OK, data);
 };
 
-export { getAllRolls, addRoll, findById, updateRoll, deleteRoll, deleteRolls };
+const partialUpdate = async function (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const requestBody: RolDTO = req.body;
+    requestBody.id = req.params.id;
+    const data = await rollsService.partialUpdateRoll(requestBody, next);
+    responseHandler(res, Messages.ADD_ROLL_OK, data);
+};
+
+export {
+    getAllRolls,
+    addRoll,
+    findById,
+    updateRoll,
+    deleteRoll,
+    deleteRolls,
+    partialUpdate
+};

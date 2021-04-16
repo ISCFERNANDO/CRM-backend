@@ -13,6 +13,10 @@ const updateRol = async function (contract: RolDTO): Promise<any> {
     return RolModel.findByIdAndUpdate(contract.id, rollDtoToModel(contract));
 };
 
+const partialUpdateRol = async function (contract: RolDTO): Promise<any> {
+    return RolModel.findByIdAndUpdate(contract.id, { ...contract });
+};
+
 function rollDtoToModel(contract: RolDTO): any {
     return {
         name: contract.name,
@@ -39,4 +43,12 @@ const deleteByIds = async function (ids: string[]): Promise<any> {
     return Promise.all(promises);
 };
 
-export { getAllRol, addRol, updateRol, deleteRol, findById, deleteByIds };
+export {
+    getAllRol,
+    addRol,
+    updateRol,
+    deleteRol,
+    findById,
+    deleteByIds,
+    partialUpdateRol
+};

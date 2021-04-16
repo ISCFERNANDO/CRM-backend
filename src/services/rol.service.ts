@@ -114,11 +114,29 @@ const deleteRollsByIds = async function (
     }
 };
 
+const partialUpdateRoll = async function (
+    contract: RolDTO,
+    next: NextFunction
+): Promise<RolDTO | void> {
+    try {
+        const data = await rollRepository.partialUpdateRol(contract);
+        if (!data) {
+            next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+            return;
+        }
+        contract.id = data._id;
+        return contract;
+    } catch (error) {
+        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+    }
+};
+
 export {
     getAllRolls,
     addRoll,
     findRollById,
     updateRoll,
     deleteRoll,
-    deleteRollsByIds
+    deleteRollsByIds,
+    partialUpdateRoll
 };

@@ -5,6 +5,7 @@ import {
     deleteRolls,
     findById,
     getAllRolls,
+    partialUpdate,
     updateRoll
 } from '../controllers/rol.controller';
 import createRollvalidator from '../validators/create-roll.validator';
@@ -19,6 +20,7 @@ accesoRoute
     .route('/v1/rolls/:id')
     .get(findById)
     .put(createRollvalidator, updateRoll)
+    .patch(partialUpdate)
     .delete(deleteRoll);
 
 export default accesoRoute;
