@@ -21,7 +21,8 @@ const userModel = new mongoose.Schema(
                 type: mongoose.Types.ObjectId,
                 ref: 'access'
             }
-        ]
+        ],
+        active: Boolean
     },
     { collection: 'user' }
 );
