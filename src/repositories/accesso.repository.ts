@@ -27,7 +27,7 @@ const deleteByIds = async function (ids: string[]): Promise<any> {
 };
 
 const findIfNotInIds = async function (ids: string[]): Promise<any> {
-    return AccessModel.where({ _id: { $nin: ids } });
+    return AccessModel.where({ _id: { $nin: ids }, deleted: false });
 };
 
 export {
