@@ -5,6 +5,7 @@ import { join } from 'path';
 import HttpException from '../common/http.exception';
 import { DIR_IMG_PROFILE_USR } from '../constants/resources.json';
 import { createDirectoryIfNotExist, createFile } from '../utils/file-utils';
+import { Messages } from './../constants/messages';
 
 const uploadFile = async function (
     request: Request,
@@ -12,7 +13,8 @@ const uploadFile = async function (
 ): Promise<Object | void> {
     try {
         const { files } = await formidableParse(request);
-        const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${files.image.name}`;
+        const fileName = `${new Date().getTime()}_${files.image.name}`;
+        const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${fileName}`;
         const oldPath = files.image.path;
         const pathDirectory = join(
             __dirname,
@@ -22,13 +24,13 @@ const uploadFile = async function (
         );
         createDirectoryIfNotExist(pathDirectory);
 
-        const newPath = join(pathDirectory, files.image.name);
+        const newPath = join(pathDirectory, fileName);
         const data = fs.readFileSync(oldPath);
         await createFile(newPath, data);
-        return { imageUrl };
+        return { fileName, imageUrl };
     } catch (error) {
         console.log(error);
-        next(new HttpException(404, 'Ocurrió un error al subir el archivo'));
+        next(new HttpException(404, Messages.UPLOAD_FAILED));
     }
 };
 

@@ -14,5 +14,7 @@ export enum Messages {
     ADD_ROLL_OK = 'El rol se agregó correctamente',
     UPDATE_ROLL_OK = 'El rol se actualizó correctamente',
     ROLL_NOT_FOUND = 'No se encontró el rol',
-    DELETE_ROLL_OK = 'El rol se eliminó correctamente'
+    DELETE_ROLL_OK = 'El rol se eliminó correctamente',
+    UPLOAD_SUCCESS = 'El archivo se subió correctamente',
+    UPLOAD_FAILED = 'Ocurrió un error al subir el archivo'
 }

@@ -9,7 +9,7 @@ const uploadFile = async function (
     next: NextFunction
 ) {
     const data = await uploadService.uploadFile(req, next);
-    responseHandler(res, Messages.ADD_ACCESS_OK, data);
+    responseHandler(res, Messages.UPLOAD_SUCCESS, data);
 };
 
 export { uploadFile };
