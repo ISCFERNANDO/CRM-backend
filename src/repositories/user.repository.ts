@@ -39,7 +39,8 @@ function userDtoToModel(contract: UserDTO): any {
             ? {
                   _id: contract.rol?.id
               }
-            : null
+            : null,
+        imageUrl: contract.imageUrl
     };
     return userDto;
 }
