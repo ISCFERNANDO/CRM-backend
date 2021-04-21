@@ -5,6 +5,7 @@ import { join } from 'path';
 import HttpException from '../common/http.exception';
 import { DIR_IMG_PROFILE_USR } from '../constants/resources.json';
 import { createDirectoryIfNotExist, createFile } from '../utils/file-utils';
+import { removeSpecialCharsInUrl } from '../utils/string-utils';
 import { Messages } from './../constants/messages';
 
 const uploadFile = async function (
@@ -13,7 +14,9 @@ const uploadFile = async function (
 ): Promise<Object | void> {
     try {
         const { files } = await formidableParse(request);
-        const fileName = `${new Date().getTime()}_${files.image.name}`;
+        const fileName = `${new Date().getTime()}_${removeSpecialCharsInUrl(
+            files.image.name
+        )}`;
         const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${fileName}`;
         const oldPath = files.image.path;
         const pathDirectory = join(
