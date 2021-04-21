@@ -1,5 +1,5 @@
 export enum Messages {
-    NOT_FOUND_ENDPOINT = 'No se encontró el endpoint',
+    NOT_FOUND_ENDPOINT = 'No se encontró el recurso',
     OPERATION_OK = 'Operación exitosa',
     ADD_ACCESS_OK = 'El acceso se agregó correctamente',
     UPDATE_ACCESS_OK = 'El acceso se actualizó correctamente',
