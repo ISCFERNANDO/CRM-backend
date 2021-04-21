@@ -1,20 +1,22 @@
 const removeSpecialCharsInUrl = (str: string) => {
-    return str
-        .replace(/\s/g, '_')
-        .replace(/-/g, '_')
-        .replace(/./g, '')
-        .replace(/;/g, '')
-        .replace(/:/g, '')
-        .replace(/Á/g, 'A')
-        .replace(/á/g, 'a')
-        .replace(/É/g, 'E')
-        .replace(/é/g, 'e')
-        .replace(/Í/g, 'I')
-        .replace(/í/g, 'i')
-        .replace(/Ó/g, 'O')
-        .replace(/ó/g, 'o')
-        .replace(/Ú/g, 'U')
-        .replace(/ú/g, 'u');
+    const chars: any = {
+        ' ': '_',
+        '-': '_',
+        '.': '.',
+        ';': '',
+        ':': '',
+        Á: 'A',
+        á: 'a',
+        É: 'E',
+        é: 'e',
+        Í: 'I',
+        í: 'i',
+        Ó: 'O',
+        ó: 'o',
+        Ú: 'U',
+        ú: 'u'
+    };
+    return str.replace(/[ -.;:ÁáÉéÍíÓóÚú]/g, (m) => chars[m]);
 };
 
 export { removeSpecialCharsInUrl };
