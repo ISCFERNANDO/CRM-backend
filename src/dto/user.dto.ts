@@ -15,4 +15,5 @@ export interface UserDTO {
     rol: RolDTO | null;
     accesess: AccessDTO[];
     active: boolean;
+    imageUrl: string;
 }

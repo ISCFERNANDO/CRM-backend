@@ -22,7 +22,8 @@ const userModel = new mongoose.Schema(
                 ref: 'access'
             }
         ],
-        active: Boolean
+        active: Boolean,
+        imageUrl: String
     },
     { collection: 'user' }
 );

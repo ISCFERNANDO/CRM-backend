@@ -16,5 +16,11 @@ export enum Messages {
     ROLL_NOT_FOUND = 'No se encontró el rol',
     DELETE_ROLL_OK = 'El rol se eliminó correctamente',
     UPLOAD_SUCCESS = 'El archivo se subió correctamente',
-    UPLOAD_FAILED = 'Ocurrió un error al subir el archivo'
+    UPLOAD_FAILED = 'Ocurrió un error al subir el archivo',
+    GET_USERS_ERROR = 'Ocurrió un error al obtener los usuarios',
+    ADD_USER_ERROR = 'Ocurrió un error al agregar el usuario',
+    ADD_USER_OK = 'El usuario se agregó correctamente',
+    UPDATE_USER_OK = 'El usuario se actualizó correctamente',
+    USER_NOT_FOUND = 'No se encontró el usuario',
+    DELETE_USER_OK = 'El usuario se eliminó correctamente'
 }

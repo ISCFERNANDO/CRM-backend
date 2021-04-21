@@ -92,7 +92,8 @@ function mapUser(item: any, isDetail: boolean = false): UserDTO {
         customRol: item.customRol,
         rol: null,
         accesess: [],
-        active: item.active
+        active: item.active,
+        imageUrl: item.imageUrl
     };
     if (isDetail) {
         if (item.customRol) data.accesess = item.accesess.map(mapAccess);
