@@ -56,12 +56,10 @@ const findUserById = async function (
     try {
         const data = await userRepository.findById(id);
         const detailsUser: UserDTO = mapUser(data, true);
-        if (detailsUser.customRol) {
-            const accesses: AccessDTO[] = await getListAccesosQueNoPertenecenRol(
-                detailsUser.accesess.map((item) => item.id)
-            );
-            detailsUser.accesess.push(...accesses);
-        }
+        const accesses: AccessDTO[] = await getListAccesosQueNoPertenecenRol(
+            detailsUser.accesess.map((item) => item.id)
+        );
+        detailsUser.accesess.push(...accesses);
         return detailsUser;
     } catch (error) {
         next(new HttpException(404, Messages.ROLL_NOT_FOUND));
