@@ -8,7 +8,6 @@ const userModel = new mongoose.Schema(
         email: String,
         phoneNumber: String,
         age: Number,
-        photoUrl: String,
         deleted: Boolean,
         isSystem: Boolean,
         customRol: Boolean,
