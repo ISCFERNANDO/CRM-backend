@@ -16,6 +16,8 @@ export enum Messages {
     ADD_ROLL_OK = 'El rol se agregó correctamente',
     UPDATE_ROLL_OK = 'El rol se actualizó correctamente',
     ROLL_NOT_FOUND = 'No se encontró el rol',
+    ROLL_EXIST = 'Ya existe un rol con el mismo nombre',
+    ROLL_NOT_REMOVABLE = 'No se puede eliminar un rol de sistema',
     DELETE_ROLL_OK = 'El rol se eliminó correctamente',
     UPLOAD_SUCCESS = 'El archivo se subió correctamente',
     UPLOAD_FAILED = 'Ocurrió un error al subir el archivo',
@@ -23,6 +25,8 @@ export enum Messages {
     ADD_USER_ERROR = 'Ocurrió un error al agregar el usuario',
     ADD_USER_OK = 'El usuario se agregó correctamente',
     UPDATE_USER_OK = 'El usuario se actualizó correctamente',
+    USER_EXIST = 'Ya existe un usuario con el mismo nombre',
+    USER_NOT_REMOVABLE = 'No se puede eliminar un usuario de sistema',
     USER_NOT_FOUND = 'No se encontró el usuario',
     DELETE_USER_OK = 'El usuario se eliminó correctamente'
 }

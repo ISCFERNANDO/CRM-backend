@@ -43,6 +43,24 @@ const deleteByIds = async function (ids: string[]): Promise<any> {
     return Promise.all(promises);
 };
 
+const checkIfExistAccessName = async function (
+    name: string,
+    id?: string
+): Promise<any> {
+    if (!id) {
+        return RolModel.findOne().where({ deleted: false, name: name });
+    }
+    return RolModel.findOne().where({
+        deleted: false,
+        name: name,
+        _id: { $ne: id }
+    });
+};
+
+const isSystem = function (id: string): Promise<any> {
+    return RolModel.findOne().where({ _id: id, isSystem: true });
+};
+
 export {
     getAllRol,
     addRol,
@@ -50,5 +68,7 @@ export {
     deleteRol,
     findById,
     deleteByIds,
-    partialUpdateRol
+    partialUpdateRol,
+    checkIfExistAccessName,
+    isSystem
 };

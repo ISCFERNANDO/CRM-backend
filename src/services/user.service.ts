@@ -30,6 +30,10 @@ const addUser = async function (
     next: NextFunction
 ): Promise<UserDTO | void> {
     try {
+        if (await checkIfExistAccessName(contract.name)) {
+            next(new HttpException(HttpStatus.CONFLICT, Messages.USER_EXIST));
+            return;
+        }
         const data = await userRepository.addUser(contract);
         contract.id = data._id;
         return contract;
@@ -48,6 +52,10 @@ const updateUser = async function (
     next: NextFunction
 ): Promise<UserDTO | void> {
     try {
+        if (await checkIfExistAccessName(contract.name, contract.id)) {
+            next(new HttpException(HttpStatus.CONFLICT, Messages.USER_EXIST));
+            return;
+        }
         const data = await userRepository.updateUser(contract);
         if (!data) {
             next(
@@ -66,6 +74,10 @@ const updateUser = async function (
         );
     }
 };
+
+function checkIfExistAccessName(name: string, id?: string) {
+    return userRepository.checkIfExistAccessName(name, id);
+}
 
 const findUserById = async function (
     id: string,
@@ -123,12 +135,20 @@ const deleteUser = async function (
     next: NextFunction
 ): Promise<boolean | void> {
     try {
+        const isSystem = await userRepository.isSystem(id);
+        if (isSystem) {
+            next(
+                new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_NOT_REMOVABLE
+                )
+            );
+            return;
+        }
         await userRepository.deleteUser(id);
         return true;
     } catch (error) {
-        next(
-            new HttpException(HttpStatus.NOT_FOUND, Messages.ACCESS_NOT_FOUND)
-        );
+        next(new HttpException(HttpStatus.NOT_FOUND, Messages.USER_NOT_FOUND));
     }
 };
 
@@ -137,6 +157,15 @@ const deleteUsersByIds = async function (
     next: NextFunction
 ): Promise<boolean | void> {
     try {
+        if (await checkIfAnyIsFromSystem(ids)) {
+            next(
+                new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_NOT_REMOVABLE
+                )
+            );
+            return;
+        }
         await userRepository.deleteByIds(ids);
         return true;
     } catch (error) {
@@ -167,6 +196,15 @@ const partialUpdateUser = async function (
         );
     }
 };
+
+async function checkIfAnyIsFromSystem(ids: string[]): Promise<boolean> {
+    for (let index = 0; index < ids.length; index++) {
+        if (await userRepository.isSystem(ids[index])) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function mapRol(item: any): RolDTO {
     return {

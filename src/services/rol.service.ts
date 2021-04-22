@@ -29,6 +29,10 @@ const addRoll = async function (
     next: NextFunction
 ): Promise<RolDTO | void> {
     try {
+        if (await checkIfExistAccessName(contract.name)) {
+            next(new HttpException(HttpStatus.CONFLICT, Messages.ROLL_EXIST));
+            return;
+        }
         const data = await rollRepository.addRol(contract);
         contract.id = data._id;
         return contract;
@@ -47,6 +51,10 @@ const updateRoll = async function (
     next: NextFunction
 ): Promise<RolDTO | void> {
     try {
+        if (await checkIfExistAccessName(contract.name, contract.id)) {
+            next(new HttpException(HttpStatus.CONFLICT, Messages.ROLL_EXIST));
+            return;
+        }
         const data = await rollRepository.updateRol(contract);
         if (!data) {
             next(
@@ -65,6 +73,10 @@ const updateRoll = async function (
         );
     }
 };
+
+function checkIfExistAccessName(name: string, id?: string) {
+    return rollRepository.checkIfExistAccessName(name, id);
+}
 
 const findRollById = async function (
     id: string,
@@ -113,6 +125,16 @@ const deleteRoll = async function (
     next: NextFunction
 ): Promise<boolean | void> {
     try {
+        const isSystem = await rollRepository.isSystem(id);
+        if (isSystem) {
+            next(
+                new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_NOT_REMOVABLE
+                )
+            );
+            return;
+        }
         await rollRepository.deleteRol(id);
         return true;
     } catch (error) {
@@ -127,6 +149,15 @@ const deleteRollsByIds = async function (
     next: NextFunction
 ): Promise<boolean | void> {
     try {
+        if (await checkIfAnyIsFromSystem(ids)) {
+            next(
+                new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_NOT_REMOVABLE
+                )
+            );
+            return;
+        }
         await rollRepository.deleteByIds(ids);
         return true;
     } catch (error) {
@@ -155,6 +186,15 @@ const partialUpdateRoll = async function (
         );
     }
 };
+
+async function checkIfAnyIsFromSystem(ids: string[]): Promise<boolean> {
+    for (let index = 0; index < ids.length; index++) {
+        if (await rollRepository.isSystem(ids[index])) {
+            return true;
+        }
+    }
+    return false;
+}
 
 export {
     getAllRolls,

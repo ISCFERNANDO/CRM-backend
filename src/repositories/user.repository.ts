@@ -61,6 +61,24 @@ const deleteByIds = async function (ids: string[]): Promise<any> {
     return Promise.all(promises);
 };
 
+const checkIfExistAccessName = async function (
+    name: string,
+    id?: string
+): Promise<any> {
+    if (!id) {
+        return UserModel.findOne().where({ deleted: false, name: name });
+    }
+    return UserModel.findOne().where({
+        deleted: false,
+        name: name,
+        _id: { $ne: id }
+    });
+};
+
+const isSystem = function (id: string): Promise<any> {
+    return UserModel.findOne().where({ _id: id, isSystem: true });
+};
+
 export {
     getAllUsers,
     addUser,
@@ -68,5 +86,7 @@ export {
     deleteUser,
     findById,
     deleteByIds,
-    partialUpdateUser
+    partialUpdateUser,
+    checkIfExistAccessName,
+    isSystem
 };

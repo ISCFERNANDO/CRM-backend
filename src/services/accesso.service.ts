@@ -48,12 +48,7 @@ const updateAccess = async function (
     next: NextFunction
 ): Promise<AccessDTO | void> {
     try {
-        if (
-            await accessRepository.checkIfExistAccessName(
-                contract.name,
-                contract.id
-            )
-        ) {
+        if (await checkIfExistAccessName(contract.name, contract.id)) {
             next(new HttpException(HttpStatus.CONFLICT, Messages.ACCESS_EXIST));
             return;
         }

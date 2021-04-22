@@ -77,6 +77,14 @@ const createUservalidator = async (
             .withMessage(
                 'El campo active solo acepta valores boleanos (true/false)'
             )
+            .run(req),
+        body('isSystem')
+            .exists()
+            .withMessage('El campo isSystem es requerido')
+            .isBoolean()
+            .withMessage(
+                'El campo isSystem solo acepta valores boleanos (true/false)'
+            )
             .run(req)
     ];
 
