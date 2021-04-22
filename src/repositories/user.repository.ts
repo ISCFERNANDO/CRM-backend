@@ -27,7 +27,7 @@ function userDtoToModel(contract: UserDTO): any {
         age: contract.age,
         photoUrl: contract.photoUrl,
         customRol: contract.customRol,
-        isSystem: true,
+        isSystem: contract.isSystem,
         active: contract.active,
         deleted: false,
         accesess: contract.customRol

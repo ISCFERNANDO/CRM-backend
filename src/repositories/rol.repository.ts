@@ -22,7 +22,7 @@ function rollDtoToModel(contract: RolDTO): any {
         name: contract.name,
         description: contract.description,
         active: contract.active,
-        isSystem: true,
+        isSystem: contract.isSystem,
         accesess: contract.accesess.map((item) => ({
             _id: item.id
         })),
