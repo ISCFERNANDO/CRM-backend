@@ -28,5 +28,7 @@ export enum Messages {
     USER_EXIST = 'Ya existe un usuario con el mismo nombre',
     USER_NOT_REMOVABLE = 'No se puede eliminar un usuario de sistema',
     USER_NOT_FOUND = 'No se encontró el usuario',
-    DELETE_USER_OK = 'El usuario se eliminó correctamente'
+    EMAIL_OR_PASSWORD_NOT_FOUND = 'Correo y/o contraseña incorrecto(s)',
+    DELETE_USER_OK = 'El usuario se eliminó correctamente',
+    ERROR_LOGIN = 'Ocurrió un error al iniciar sesión'
 }

@@ -56,6 +56,15 @@ const findById = async function (id: string): Promise<any> {
         .populate('accesess');
 };
 
+const findByEmailAndPassword = async function (
+    email: string,
+    password: string
+): Promise<any> {
+    return UserModel.findOne({ deleted: false, email /* , password */ })
+        .populate('rol')
+        .populate('accesess');
+};
+
 const deleteByIds = async function (ids: string[]): Promise<any> {
     const promises = ids.map((item) => deleteUser(item));
     return Promise.all(promises);
@@ -88,5 +97,6 @@ export {
     deleteByIds,
     partialUpdateUser,
     checkIfExistAccessName,
-    isSystem
+    isSystem,
+    findByEmailAndPassword
 };

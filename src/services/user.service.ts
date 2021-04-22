@@ -224,5 +224,6 @@ export {
     updateUser,
     deleteUser,
     deleteUsersByIds,
-    partialUpdateUser
+    partialUpdateUser,
+    mapUser
 };
