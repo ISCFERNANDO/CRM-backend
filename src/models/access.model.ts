@@ -6,7 +6,8 @@ const accessModel = new mongoose.Schema(
         route: String,
         description: String,
         active: Boolean,
-        deleted: Boolean
+        deleted: Boolean,
+        isSystem: Boolean
     },
     { collection: 'access' }
 );

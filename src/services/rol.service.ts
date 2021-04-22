@@ -1,5 +1,6 @@
 import { NextFunction } from 'express';
 import HttpException from '../common/http.exception';
+import { HttpStatus } from '../constants/http-status';
 import * as rollRepository from '../repositories/rol.repository';
 import { Messages } from './../constants/messages';
 import { AccessDTO } from './../dto/access.dto';
@@ -14,7 +15,12 @@ const getAllRolls = async function (
         const rolls = await rollRepository.getAllRol();
         return rolls.map((item) => mapRoll(item));
     } catch (error) {
-        next(new HttpException(500, Messages.GET_ROLLS_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.GET_ROLLS_ERROR
+            )
+        );
     }
 };
 
@@ -27,7 +33,12 @@ const addRoll = async function (
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 
@@ -38,13 +49,20 @@ const updateRoll = async function (
     try {
         const data = await rollRepository.updateRol(contract);
         if (!data) {
-            next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+            next(
+                new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND)
+            );
             return;
         }
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 
@@ -61,7 +79,7 @@ const findRollById = async function (
         detailsRoll.accesess.push(...accesses);
         return detailsRoll;
     } catch (error) {
-        next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+        next(new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND));
     }
 };
 
@@ -98,7 +116,9 @@ const deleteRoll = async function (
         await rollRepository.deleteRol(id);
         return true;
     } catch (error) {
-        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+        next(
+            new HttpException(HttpStatus.NOT_FOUND, Messages.ACCESS_NOT_FOUND)
+        );
     }
 };
 
@@ -110,7 +130,7 @@ const deleteRollsByIds = async function (
         await rollRepository.deleteByIds(ids);
         return true;
     } catch (error) {
-        next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+        next(new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND));
     }
 };
 
@@ -127,7 +147,12 @@ const partialUpdateRoll = async function (
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 

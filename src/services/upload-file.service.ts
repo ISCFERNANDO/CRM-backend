@@ -3,6 +3,7 @@ import * as formidable from 'formidable';
 import * as fs from 'fs';
 import { join } from 'path';
 import HttpException from '../common/http.exception';
+import { HttpStatus } from '../constants/http-status';
 import { DIR_IMG_PROFILE_USR } from '../constants/resources.json';
 import { createDirectoryIfNotExist, createFile } from '../utils/file-utils';
 import { removeSpecialCharsInUrl } from '../utils/string-utils';
@@ -33,7 +34,12 @@ const uploadFile = async function (
         return { fileName, imageUrl };
     } catch (error) {
         console.log(error);
-        next(new HttpException(404, Messages.UPLOAD_FAILED));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.UPLOAD_FAILED
+            )
+        );
     }
 };
 

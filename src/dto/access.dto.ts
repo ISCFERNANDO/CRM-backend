@@ -4,4 +4,5 @@ export interface AccessDTO {
     route: string;
     description?: string;
     active: boolean;
+    isSystem: boolean;
 }

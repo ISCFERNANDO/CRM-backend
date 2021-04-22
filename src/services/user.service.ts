@@ -1,5 +1,6 @@
 import { NextFunction } from 'express';
 import HttpException from '../common/http.exception';
+import { HttpStatus } from '../constants/http-status';
 import * as userRepository from '../repositories/user.repository';
 import { Messages } from './../constants/messages';
 import { AccessDTO } from './../dto/access.dto';
@@ -15,7 +16,12 @@ const getAllUsers = async function (
         const users = await userRepository.getAllUsers();
         return users.map((item) => mapUser(item));
     } catch (error) {
-        next(new HttpException(500, Messages.GET_ROLLS_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.GET_ROLLS_ERROR
+            )
+        );
     }
 };
 
@@ -28,7 +34,12 @@ const addUser = async function (
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 
@@ -39,13 +50,20 @@ const updateUser = async function (
     try {
         const data = await userRepository.updateUser(contract);
         if (!data) {
-            next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+            next(
+                new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND)
+            );
             return;
         }
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 
@@ -62,7 +80,7 @@ const findUserById = async function (
         detailsUser.accesess.push(...accesses);
         return detailsUser;
     } catch (error) {
-        next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+        next(new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND));
     }
 };
 
@@ -108,7 +126,9 @@ const deleteUser = async function (
         await userRepository.deleteUser(id);
         return true;
     } catch (error) {
-        next(new HttpException(404, Messages.ACCESS_NOT_FOUND));
+        next(
+            new HttpException(HttpStatus.NOT_FOUND, Messages.ACCESS_NOT_FOUND)
+        );
     }
 };
 
@@ -120,7 +140,7 @@ const deleteUsersByIds = async function (
         await userRepository.deleteByIds(ids);
         return true;
     } catch (error) {
-        next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+        next(new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND));
     }
 };
 
@@ -131,13 +151,20 @@ const partialUpdateUser = async function (
     try {
         const data = await userRepository.partialUpdateUser(contract);
         if (!data) {
-            next(new HttpException(404, Messages.ROLL_NOT_FOUND));
+            next(
+                new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND)
+            );
             return;
         }
         contract.id = data._id;
         return contract;
     } catch (error) {
-        next(new HttpException(500, Messages.ADD_ROLL_ERROR));
+        next(
+            new HttpException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                Messages.ADD_ROLL_ERROR
+            )
+        );
     }
 };
 

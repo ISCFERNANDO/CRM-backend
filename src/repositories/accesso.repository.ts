@@ -30,6 +30,24 @@ const findIfNotInIds = async function (ids: string[]): Promise<any> {
     return AccessModel.where({ _id: { $nin: ids }, deleted: false });
 };
 
+const checkIfExistAccessName = async function (
+    name: string,
+    id?: string
+): Promise<any> {
+    if (!id) {
+        return AccessModel.findOne().where({ deleted: false, name: name });
+    }
+    return AccessModel.findOne().where({
+        deleted: false,
+        name: name,
+        _id: { $ne: id }
+    });
+};
+
+const isSystem = function (id: string): Promise<any> {
+    return AccessModel.findOne().where({ _id: id, isSystem: true });
+};
+
 export {
     getAllAccess,
     addAccess,
@@ -37,5 +55,7 @@ export {
     deleteAccess,
     findById,
     deleteByIds,
-    findIfNotInIds
+    findIfNotInIds,
+    checkIfExistAccessName,
+    isSystem
 };
