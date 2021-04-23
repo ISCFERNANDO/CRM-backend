@@ -3,7 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./crm-backend/src",
+    "outDir": "./crm-backend",
     "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "strict": true,

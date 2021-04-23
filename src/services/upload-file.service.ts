@@ -20,12 +20,7 @@ const uploadFile = async function (
         )}`;
         const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${fileName}`;
         const oldPath = files.image.path;
-        const pathDirectory = join(
-            __dirname,
-            '../..',
-            'public',
-            DIR_IMG_PROFILE_USR
-        );
+        const pathDirectory = join(__dirname, '../public', DIR_IMG_PROFILE_USR);
         createDirectoryIfNotExist(pathDirectory);
 
         const newPath = join(pathDirectory, fileName);

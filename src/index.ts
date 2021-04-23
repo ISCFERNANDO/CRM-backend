@@ -26,7 +26,7 @@ app.use(
 app.use(timeout('10s'));
 app.use(haltOnTimedout);
 //Serves all the request which includes /images in the url from Images folder
-app.use('/images', express.static(join(__dirname, '../public/images')));
+app.use('/images', express.static(join(__dirname, 'public/images')));
 
 //rutas
 app.use('/crm-api', routes);
@@ -43,7 +43,7 @@ function haltOnTimedout(req: any, res: any, next: any) {
 }
 
 function createPublicDirectory() {
-    const pathDirectory = join(__dirname, '../public');
+    const pathDirectory = join(__dirname, 'public');
     if (!fs.existsSync(pathDirectory)) {
         fs.mkdirSync(pathDirectory, { recursive: true });
     }
