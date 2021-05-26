@@ -18,7 +18,7 @@ const partialUpdateUser = async function (contract: UserDTO): Promise<any> {
 };
 
 function userDtoToModel(contract: UserDTO): any {
-    const userDto = {
+    return {
         name: contract.name,
         firstSurname: contract.firstSurname,
         secondSurname: contract.secondSurname,
@@ -40,9 +40,9 @@ function userDtoToModel(contract: UserDTO): any {
                   _id: contract.rol?.id
               }
             : null,
+        password: contract.password,
         imageUrl: contract.imageUrl
     };
-    return userDto;
 }
 
 const deleteUser = async function (id: string): Promise<any> {
@@ -60,7 +60,7 @@ const findByEmailAndPassword = async function (
     email: string,
     password: string
 ): Promise<any> {
-    return UserModel.findOne({ deleted: false, email /* , password */ })
+    return UserModel.findOne({ deleted: false, email, password, active: true })
         .populate('rol')
         .populate('accesess');
 };

@@ -121,6 +121,7 @@ function mapUser(item: any, isDetail: boolean = false): UserDTO {
         rol: null,
         accesess: [],
         active: item.active,
+        password: item.password,
         imageUrl: item.imageUrl
     };
     if (isDetail) {

@@ -14,6 +14,7 @@ export interface UserDTO {
     customRol: boolean;
     rol: RolDTO | null;
     accesess: AccessDTO[];
+    password: string;
     active: boolean;
     imageUrl: string;
 }

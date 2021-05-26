@@ -70,6 +70,12 @@ const createUservalidator = async (
                 'El campo rol personalizado solo acepta valores boleanos (true/false)'
             )
             .run(req),
+        body('password')
+            .exists()
+            .withMessage('El password es un campo requerido')
+            .notEmpty()
+            .withMessage('El password es un campo requerido')
+            .run(req),
         body('active')
             .exists()
             .withMessage('El campo active es requerido')

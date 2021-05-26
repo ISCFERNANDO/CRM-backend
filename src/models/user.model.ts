@@ -21,6 +21,7 @@ const userModel = new mongoose.Schema(
                 ref: 'access'
             }
         ],
+        password: String,
         active: Boolean,
         imageUrl: String
     },
