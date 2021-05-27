@@ -31,7 +31,7 @@ const updateUser = async function (
     const requestBody: UserDTO = req.body;
     requestBody.id = req.params.id;
     const data = await usersService.updateUser(requestBody, next);
-    responseHandler(res, Messages.ADD_USER_OK, data);
+    responseHandler(res, Messages.UPDATE_USER_OK, data);
 };
 
 const findById = async function (
