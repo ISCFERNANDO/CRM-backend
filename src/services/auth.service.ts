@@ -25,7 +25,7 @@ const login = async function (
             );
             return;
         }
-        const userData: LoginResponse = mapUser(data, true);
+        const userData: LoginResponse = await mapUser(data, true);
         userData.token = createToken(userData);
         return userData;
     } catch (error) {

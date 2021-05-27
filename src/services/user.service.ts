@@ -6,7 +6,10 @@ import { Messages } from './../constants/messages';
 import { AccessDTO } from './../dto/access.dto';
 import { RolDTO } from './../dto/rol.dto';
 import { UserDTO } from './../dto/user.dto';
-import { findIfNotInIds } from './../repositories/accesso.repository';
+import {
+    findIfInIds,
+    findIfNotInIds
+} from './../repositories/accesso.repository';
 import { mapAccess } from './accesso.service';
 
 const getAllUsers = async function (
@@ -14,7 +17,8 @@ const getAllUsers = async function (
 ): Promise<UserDTO[] | void> {
     try {
         const users = await userRepository.getAllUsers();
-        return users.map((item) => mapUser(item));
+        const data = users.map((item) => mapUser(item));
+        return Promise.all(data);
     } catch (error) {
         next(
             new HttpException(
@@ -85,12 +89,7 @@ const findUserById = async function (
 ): Promise<UserDTO | void> {
     try {
         const data = await userRepository.findById(id);
-        const detailsUser: UserDTO = mapUser(data, true);
-        const accesses: AccessDTO[] = await getListAccesosQueNoPertenecenRol(
-            detailsUser.accesess.map((item) => item.id)
-        );
-        detailsUser.accesess.push(...accesses);
-        return detailsUser;
+        return mapUser(data, true);
     } catch (error) {
         next(new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND));
     }
@@ -106,7 +105,14 @@ async function getListAccesosQueNoPertenecenRol(
     });
 }
 
-function mapUser(item: any, isDetail: boolean = false): UserDTO {
+async function getListAccesosQuePertenecenRol(
+    ids: string[]
+): Promise<AccessDTO[]> {
+    const accesses = await findIfInIds(ids);
+    return accesses.map(mapAccess);
+}
+
+async function mapUser(item: any, isDetail: boolean = false): Promise<UserDTO> {
     const data: UserDTO = {
         id: item._id,
         name: item.name,
@@ -125,9 +131,22 @@ function mapUser(item: any, isDetail: boolean = false): UserDTO {
         imageUrl: item.imageUrl
     };
     if (isDetail) {
-        if (item.customRol) data.accesess = item.accesess.map(mapAccess);
-        else data.rol = mapRol(item.rol);
+        if (item.customRol) {
+            data.accesess = item.accesess.map(mapAccess);
+            const accesses: AccessDTO[] = await getListAccesosQueNoPertenecenRol(
+                data.accesess.map((a) => a.id)
+            );
+            data.accesess.push(...accesses);
+        } else {
+            console.log(item.rol.accesess);
+            data.rol = mapRol(item.rol);
+            const accesses: AccessDTO[] = await getListAccesosQuePertenecenRol(
+                item.rol.accesess
+            );
+            data.rol.accesess = accesses;
+        }
     }
+
     return data;
 }
 
@@ -199,10 +218,8 @@ const partialUpdateUser = async function (
 };
 
 async function checkIfAnyIsFromSystem(ids: string[]): Promise<boolean> {
-    for (let index = 0; index < ids.length; index++) {
-        if (await userRepository.isSystem(ids[index])) {
-            return true;
-        }
+    for (let id of ids) {
+        if (await userRepository.isSystem(id)) return true;
     }
     return false;
 }
