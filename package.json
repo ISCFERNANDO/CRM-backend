@@ -40,7 +40,9 @@
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0"
   },
   "nodemonConfig": {
     "ignore": [

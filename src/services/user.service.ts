@@ -6,11 +6,11 @@ import { Messages } from './../constants/messages';
 import { AccessDTO } from './../dto/access.dto';
 import { RolDTO } from './../dto/rol.dto';
 import { UserDTO } from './../dto/user.dto';
-import {
+/*import {
     findIfInIds,
     findIfNotInIds
 } from './../repositories/accesso.repository';
-import { mapAccess } from './accesso.service';
+import { mapAccess } from './accesso.service';*/
 
 const getAllUsers = async function (
     next: NextFunction
@@ -98,18 +98,20 @@ const findUserById = async function (
 async function getListAccesosQueNoPertenecenRol(
     ids: string[]
 ): Promise<AccessDTO[]> {
-    const accesses = await findIfNotInIds(ids);
+    /* const accesses = await findIfNotInIds(ids);
     return accesses.map(mapAccess).map((item: AccessDTO) => {
         item.active = false;
         return item;
-    });
+    }); */
+    return [];
 }
 
 async function getListAccesosQuePertenecenRol(
     ids: string[]
 ): Promise<AccessDTO[]> {
-    const accesses = await findIfInIds(ids);
-    return accesses.map(mapAccess);
+    /* const accesses = await findIfInIds(ids);
+    return accesses.map(mapAccess); */
+    return [];
 }
 
 async function mapUser(item: any, isDetail: boolean = false): Promise<UserDTO> {
@@ -132,7 +134,7 @@ async function mapUser(item: any, isDetail: boolean = false): Promise<UserDTO> {
     };
     if (isDetail) {
         if (item.customRol) {
-            data.accesess = item.accesess.map(mapAccess);
+            data.accesess = []; //item.accesess.map(mapAccess);
             const accesses: AccessDTO[] = await getListAccesosQueNoPertenecenRol(
                 data.accesess.map((a) => a.id)
             );

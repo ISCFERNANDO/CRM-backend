@@ -1,66 +1,69 @@
+import 'reflect-metadata';
+import { Service } from 'typedi';
 import { AccessModel } from '../models';
 import { AccessDTO } from './../dto/access.dto';
+export interface IAccessoRepository {
+    getAllAccess(): Promise<Array<any>>;
 
-const getAllAccess = async function (): Promise<Array<any>> {
-    return AccessModel.where({ deleted: false });
-};
+    addAccess(contract: AccessDTO): Promise<any>;
 
-const addAccess = async function (contract: AccessDTO): Promise<any> {
-    return AccessModel.create({ ...contract, deleted: false });
-};
+    updateAccess(contract: AccessDTO): Promise<any>;
 
-const updateAccess = async function (contract: AccessDTO): Promise<any> {
-    return AccessModel.findByIdAndUpdate(contract.id, contract);
-};
+    deleteAccess(id: string): Promise<any>;
 
-const deleteAccess = async function (id: string): Promise<any> {
-    return AccessModel.findByIdAndUpdate(id, { deleted: true });
-};
+    findById(id: string): Promise<any>;
 
-const findById = async function (id: string): Promise<any> {
-    return AccessModel.findById(id).where({ deleted: false });
-};
+    deleteByIds(ids: string[]): Promise<any>;
 
-const deleteByIds = async function (ids: string[]): Promise<any> {
-    const promises = ids.map((item) => deleteAccess(item));
-    return Promise.all(promises);
-};
+    findIfNotInIds(ids: string[]): Promise<any>;
 
-const findIfNotInIds = async function (ids: string[]): Promise<any> {
-    return AccessModel.where({ _id: { $nin: ids }, deleted: false });
-};
+    findIfInIds(ids: string[]): Promise<any>;
 
-const findIfInIds = async function (ids: string[]): Promise<any> {
-    return AccessModel.where({ _id: { $in: ids }, deleted: false });
-};
+    checkIfExistAccessName(name: string, id?: string): Promise<any>;
 
-const checkIfExistAccessName = async function (
-    name: string,
-    id?: string
-): Promise<any> {
-    if (!id) {
-        return AccessModel.findOne().where({ deleted: false, name: name });
+    isSystem(id: string): Promise<any>;
+}
+
+@Service()
+export class AccessoRepository implements IAccessoRepository {
+    public getAllAccess = (): Promise<Array<any>> =>
+        AccessModel.where({ deleted: false });
+
+    public addAccess = (contract: AccessDTO): Promise<any> =>
+        AccessModel.create({ ...contract, deleted: false });
+
+    public updateAccess = (contract: AccessDTO): Promise<any> =>
+        AccessModel.findByIdAndUpdate(contract.id, contract);
+
+    public deleteAccess = (id: string): Promise<any> =>
+        AccessModel.findByIdAndUpdate(id, { deleted: true });
+
+    public findById(id: string): Promise<any> {
+        return AccessModel.findById(id).where({ deleted: false });
     }
-    return AccessModel.findOne().where({
-        deleted: false,
-        name: name,
-        _id: { $ne: id }
-    });
-};
 
-const isSystem = function (id: string): Promise<any> {
-    return AccessModel.findOne().where({ _id: id, isSystem: true });
-};
+    public deleteByIds(ids: string[]): Promise<any> {
+        const promises = ids.map((item) => this.deleteAccess(item));
+        return Promise.all(promises);
+    }
 
-export {
-    getAllAccess,
-    addAccess,
-    updateAccess,
-    deleteAccess,
-    findById,
-    deleteByIds,
-    findIfNotInIds,
-    checkIfExistAccessName,
-    isSystem,
-    findIfInIds
-};
+    public findIfNotInIds = (ids: string[]): Promise<any> =>
+        AccessModel.where({ _id: { $nin: ids }, deleted: false });
+
+    public findIfInIds = (ids: string[]): Promise<any> =>
+        AccessModel.where({ _id: { $in: ids }, deleted: false });
+
+    public checkIfExistAccessName(name: string, id?: string): Promise<any> {
+        if (!id) {
+            return AccessModel.findOne().where({ deleted: false, name: name });
+        }
+        return AccessModel.findOne().where({
+            deleted: false,
+            name: name,
+            _id: { $ne: id }
+        });
+    }
+
+    public isSystem = (id: string): Promise<any> =>
+        AccessModel.findOne().where({ _id: id, isSystem: true });
+}

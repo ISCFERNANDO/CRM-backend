@@ -7,6 +7,7 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as morgan from 'morgan';
 import { join } from 'path';
+import 'reflect-metadata';
 import { errorHandler } from './middlewares/error.middleware';
 import { notFoundHandler } from './middlewares/not-found.middleware';
 import routes from './routes';

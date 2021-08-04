@@ -5,8 +5,8 @@ import * as rollRepository from '../repositories/rol.repository';
 import { Messages } from './../constants/messages';
 import { AccessDTO } from './../dto/access.dto';
 import { RolDTO } from './../dto/rol.dto';
-import { findIfNotInIds } from './../repositories/accesso.repository';
-import { mapAccess } from './accesso.service';
+/*import { findIfNotInIds } from './../repositories/accesso.repository';
+import { mapAccess } from './accesso.service';*/
 
 const getAllRolls = async function (
     next: NextFunction
@@ -98,11 +98,12 @@ const findRollById = async function (
 async function getListAccesosQueNoPertenecenRol(
     ids: string[]
 ): Promise<AccessDTO[]> {
-    const accesses = await findIfNotInIds(ids);
+    /* const accesses = await findIfNotInIds(ids);
     return accesses.map(mapAccess).map((item: AccessDTO) => {
         item.active = false;
         return item;
-    });
+    }); */
+    return [];
 }
 
 function mapRoll(item: any, isDetail: boolean = false): RolDTO {
@@ -115,7 +116,7 @@ function mapRoll(item: any, isDetail: boolean = false): RolDTO {
         active: item.active
     };
     if (isDetail && item.accesess) {
-        data.accesess = item.accesess.map(mapAccess);
+        data.accesess = []; //item.accesess.map(mapAccess);
     }
     return data;
 }
