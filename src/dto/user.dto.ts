@@ -1,12 +1,9 @@
 import { AccessDTO } from './access.dto';
+import { PersonDTO } from './person.dto';
 import { RolDTO } from './rol.dto';
 
-export interface UserDTO {
+export interface UserDTO extends PersonDTO {
     id: string;
-    name: string;
-    firstSurname: string;
-    secondSurname?: string;
-    email: string;
     phoneNumber?: string;
     age: number;
     photoUrl?: string;
