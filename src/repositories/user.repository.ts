@@ -1,102 +1,97 @@
+import { Service } from 'typedi';
 import { UserModel } from '../models';
 import { UserDTO } from './../dto/user.dto';
 
-const getAllUsers = async function (): Promise<Array<any>> {
-    return UserModel.where({ deleted: false });
-};
-
-const addUser = async function (contract: UserDTO): Promise<any> {
-    return UserModel.create(userDtoToModel(contract));
-};
-
-const updateUser = async function (contract: UserDTO): Promise<any> {
-    return UserModel.findByIdAndUpdate(contract.id, userDtoToModel(contract));
-};
-
-const partialUpdateUser = async function (contract: UserDTO): Promise<any> {
-    return UserModel.findByIdAndUpdate(contract.id, { ...contract });
-};
-
-function userDtoToModel(contract: UserDTO): any {
-    return {
-        name: contract.name,
-        firstSurname: contract.firstSurname,
-        secondSurname: contract.secondSurname,
-        email: contract.email,
-        phoneNumber: contract.phoneNumber,
-        age: contract.age,
-        photoUrl: contract.photoUrl,
-        customRol: contract.customRol,
-        isSystem: contract.isSystem,
-        active: contract.active,
-        deleted: false,
-        accesess: contract.customRol
-            ? contract.accesess.map((item) => ({
-                  _id: item.id
-              }))
-            : [],
-        rol: !contract.customRol
-            ? {
-                  _id: contract.rol?.id
-              }
-            : null,
-        password: contract.password,
-        imageUrl: contract.imageUrl
-    };
+export interface IUserRepository {
+    getAllUsers(): Promise<Array<any>>;
+    addUser(contract: UserDTO): Promise<any>;
+    updateUser(contract: UserDTO): Promise<any>;
+    partialUpdateUser(contract: UserDTO): Promise<any>;
+    deleteUser(id: string): Promise<any>;
+    findById(id: string): Promise<any>;
+    findByEmailAndPassword(email: string, password: string): Promise<any>;
+    deleteByIds(ids: string[]): Promise<any>;
+    checkIfExistAccessName(name: string, id?: string): Promise<any>;
+    isSystem(id: string): Promise<any>;
 }
 
-const deleteUser = async function (id: string): Promise<any> {
-    return UserModel.findByIdAndUpdate(id, { deleted: true });
-};
+@Service()
+export class UserRepository implements IUserRepository {
+    getAllUsers = (): Promise<Array<any>> =>
+        UserModel.where({ deleted: false });
 
-const findById = async function (id: string): Promise<any> {
-    return UserModel.findById(id)
-        .where({ deleted: false })
-        .populate('rol')
-        .populate('accesess');
-};
+    addUser = (contract: UserDTO): Promise<any> =>
+        UserModel.create(this.userDtoToModel(contract));
 
-const findByEmailAndPassword = async function (
-    email: string,
-    password: string
-): Promise<any> {
-    return UserModel.findOne({ deleted: false, email, password, active: true })
-        .populate('rol')
-        .populate('accesess');
-};
+    updateUser = (contract: UserDTO): Promise<any> =>
+        UserModel.findByIdAndUpdate(contract.id, this.userDtoToModel(contract));
 
-const deleteByIds = async function (ids: string[]): Promise<any> {
-    const promises = ids.map((item) => deleteUser(item));
-    return Promise.all(promises);
-};
+    partialUpdateUser = (contract: UserDTO): Promise<any> =>
+        UserModel.findByIdAndUpdate(contract.id, { ...contract });
 
-const checkIfExistAccessName = async function (
-    name: string,
-    id?: string
-): Promise<any> {
-    if (!id) {
-        return UserModel.findOne().where({ deleted: false, name: name });
+    deleteUser = (id: string): Promise<any> =>
+        UserModel.findByIdAndUpdate(id, { deleted: true });
+
+    findById = (id: string): Promise<any> =>
+        UserModel.findById(id)
+            .where({ deleted: false })
+            .populate('rol')
+            .populate('accesess');
+
+    findByEmailAndPassword = (email: string, password: string): Promise<any> =>
+        UserModel.findOne({
+            deleted: false,
+            email,
+            password,
+            active: true
+        })
+            .populate('rol')
+            .populate('accesess');
+
+    deleteByIds(ids: string[]): Promise<any> {
+        const promises = ids.map((item) => this.deleteUser(item));
+        return Promise.all(promises);
     }
-    return UserModel.findOne().where({
-        deleted: false,
-        name: name,
-        _id: { $ne: id }
-    });
-};
 
-const isSystem = function (id: string): Promise<any> {
-    return UserModel.findOne().where({ _id: id, isSystem: true });
-};
+    checkIfExistAccessName(name: string, id?: string): Promise<any> {
+        if (!id) {
+            return UserModel.findOne().where({ deleted: false, name: name });
+        }
+        return UserModel.findOne().where({
+            deleted: false,
+            name: name,
+            _id: { $ne: id }
+        });
+    }
 
-export {
-    getAllUsers,
-    addUser,
-    updateUser,
-    deleteUser,
-    findById,
-    deleteByIds,
-    partialUpdateUser,
-    checkIfExistAccessName,
-    isSystem,
-    findByEmailAndPassword
-};
+    isSystem = (id: string): Promise<any> =>
+        UserModel.findOne().where({ _id: id, isSystem: true });
+
+    private userDtoToModel(contract: UserDTO): any {
+        return {
+            name: contract.name,
+            firstSurname: contract.firstSurname,
+            secondSurname: contract.secondSurname,
+            email: contract.email,
+            phoneNumber: contract.phoneNumber,
+            age: contract.age,
+            photoUrl: contract.photoUrl,
+            customRol: contract.customRol,
+            isSystem: contract.isSystem,
+            active: contract.active,
+            deleted: false,
+            accesess: contract.customRol
+                ? contract.accesess.map((item) => ({
+                      _id: item.id
+                  }))
+                : [],
+            rol: !contract.customRol
+                ? {
+                      _id: contract.rol?.id
+                  }
+                : null,
+            password: contract.password,
+            imageUrl: contract.imageUrl
+        };
+    }
+}

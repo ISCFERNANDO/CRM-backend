@@ -12,10 +12,9 @@ function createToken(user: UserDTO): string {
 
 function validateAndDecodeToken(token: string): any {
     try {
-        const data: any = verify(token, secret, {
+        return verify(token, secret, {
             complete: true
         });
-        return data;
     } catch (error) {
         const message = mapJwtError(error);
         throw new HttpException(HttpStatus.UNAUTHORIZED, message, error);

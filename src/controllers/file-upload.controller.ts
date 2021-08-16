@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import { Service } from 'typedi';
 import responseHandler from '../common/response-handler';
-import * as uploadService from '../services/upload-file.service';
 import { Messages } from './../constants/messages';
+import { FileUploadService } from './../services/upload-file.service';
 
-const uploadFile = async function (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const data = await uploadService.uploadFile(req, next);
-    responseHandler(res, Messages.UPLOAD_SUCCESS, data);
-};
+@Service()
+export class FileUploadController {
+    constructor(private uploadService: FileUploadService) {}
 
-export { uploadFile };
+    async uploadFile(req: Request, res: Response, next: NextFunction) {
+        const data = await this.uploadService.uploadFile(req, next);
+        responseHandler(res, Messages.UPLOAD_SUCCESS, data);
+    }
+}

@@ -1,74 +1,65 @@
+import { Service } from 'typedi';
 import { RolModel } from '../models';
 import { RolDTO } from './../dto/rol.dto';
 
-const getAllRol = async function (): Promise<Array<any>> {
-    return RolModel.where({ deleted: false });
-};
-
-const addRol = async function (contract: RolDTO): Promise<any> {
-    return RolModel.create(rollDtoToModel(contract));
-};
-
-const updateRol = async function (contract: RolDTO): Promise<any> {
-    return RolModel.findByIdAndUpdate(contract.id, rollDtoToModel(contract));
-};
-
-const partialUpdateRol = async function (contract: RolDTO): Promise<any> {
-    return RolModel.findByIdAndUpdate(contract.id, { ...contract });
-};
-
-function rollDtoToModel(contract: RolDTO): any {
-    return {
-        name: contract.name,
-        description: contract.description,
-        active: contract.active,
-        isSystem: contract.isSystem,
-        accesess: contract.accesess.map((item) => ({
-            _id: item.id
-        })),
-        deleted: false
-    };
+export interface IRollRepository {
+    getAllRol(): Promise<Array<any>>;
+    addRol(contract: RolDTO): Promise<any>;
+    updateRol(contract: RolDTO): Promise<any>;
+    deleteRol(id: string): Promise<any>;
+    findById(id: string): Promise<any>;
+    deleteByIds(ids: string[]): Promise<any>;
+    partialUpdateRol(contract: RolDTO): Promise<any>;
+    checkIfExistAccessName(name: string, id?: string): Promise<any>;
+    isSystem(id: string): Promise<any>;
 }
 
-const deleteRol = async function (id: string): Promise<any> {
-    return RolModel.findByIdAndUpdate(id, { deleted: true });
-};
+@Service()
+export class RollRepository implements IRollRepository {
+    public getAllRol = (): Promise<any[]> => RolModel.where({ deleted: false });
 
-const findById = async function (id: string): Promise<any> {
-    return RolModel.findById(id).where({ deleted: false }).populate('accesess');
-};
+    public addRol = (contract: RolDTO): Promise<any> =>
+        RolModel.create(this.rollDtoToModel(contract));
 
-const deleteByIds = async function (ids: string[]): Promise<any> {
-    const promises = ids.map((item) => deleteRol(item));
-    return Promise.all(promises);
-};
+    public updateRol = (contract: RolDTO): Promise<any> =>
+        RolModel.findByIdAndUpdate(contract.id, this.rollDtoToModel(contract));
 
-const checkIfExistAccessName = async function (
-    name: string,
-    id?: string
-): Promise<any> {
-    if (!id) {
-        return RolModel.findOne().where({ deleted: false, name: name });
+    public deleteRol = (id: string): Promise<any> =>
+        RolModel.findByIdAndUpdate(id, { deleted: true });
+
+    public findById = (id: string): Promise<any> =>
+        RolModel.findById(id).where({ deleted: false }).populate('accesess');
+
+    public deleteByIds(ids: string[]): Promise<any> {
+        const promises = ids.map((item) => this.deleteRol(item));
+        return Promise.all(promises);
     }
-    return RolModel.findOne().where({
-        deleted: false,
-        name: name,
-        _id: { $ne: id }
-    });
-};
+    public partialUpdateRol = (contract: RolDTO): Promise<any> =>
+        RolModel.findByIdAndUpdate(contract.id, { ...contract });
 
-const isSystem = function (id: string): Promise<any> {
-    return RolModel.findOne().where({ _id: id, isSystem: true });
-};
+    checkIfExistAccessName(name: string, id?: string): Promise<any> {
+        if (!id) {
+            return RolModel.findOne().where({ deleted: false, name: name });
+        }
+        return RolModel.findOne().where({
+            deleted: false,
+            name: name,
+            _id: { $ne: id }
+        });
+    }
+    public isSystem = (id: string): Promise<any> =>
+        RolModel.findOne().where({ _id: id, isSystem: true });
 
-export {
-    getAllRol,
-    addRol,
-    updateRol,
-    deleteRol,
-    findById,
-    deleteByIds,
-    partialUpdateRol,
-    checkIfExistAccessName,
-    isSystem
-};
+    private rollDtoToModel(contract: RolDTO): any {
+        return {
+            name: contract.name,
+            description: contract.description,
+            active: contract.active,
+            isSystem: contract.isSystem,
+            accesess: contract.accesess.map((item) => ({
+                _id: item.id
+            })),
+            deleted: false
+        };
+    }
+}
