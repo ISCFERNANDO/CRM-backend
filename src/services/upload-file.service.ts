@@ -3,12 +3,9 @@ import * as formidable from 'formidable';
 import * as fs from 'fs';
 import { join } from 'path';
 import { Service } from 'typedi';
-import HttpException from '../common/http.exception';
-import { HttpStatus } from '../constants/http-status';
 import { DIR_IMG_PROFILE_USR } from '../constants/resources.json';
 import { createDirectoryIfNotExist, createFile } from '../utils/file-utils';
 import { removeSpecialCharsInUrl } from '../utils/string-utils';
-import { Messages } from './../constants/messages';
 
 @Service()
 export class FileUploadService {
@@ -35,13 +32,7 @@ export class FileUploadService {
             await createFile(newPath, data);
             return { fileName, imageUrl };
         } catch (error) {
-            console.log(error);
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.UPLOAD_FAILED
-                )
-            );
+            next(error);
         }
     }
 

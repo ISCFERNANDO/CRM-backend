@@ -25,13 +25,10 @@ export class AuthService {
                 loginContract.password
             );
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.EMAIL_OR_PASSWORD_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.EMAIL_OR_PASSWORD_NOT_FOUND
                 );
-                return;
             }
             const userData: LoginResponse = await this.userService.mapUser(
                 data,
@@ -40,13 +37,7 @@ export class AuthService {
             userData.token = createToken(userData);
             return userData;
         } catch (error) {
-            console.log(error);
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ERROR_LOGIN
-                )
-            );
+            next(error);
         }
     }
 }
