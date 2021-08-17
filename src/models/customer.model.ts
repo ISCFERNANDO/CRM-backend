@@ -9,7 +9,7 @@ const customerModel = new mongoose.Schema(
         photoUrl: String,
         telefonos: [
             {
-                tipoTelefono: String,
+                tipoTelefono: Number,
                 telefono: String,
                 extension: String
             }

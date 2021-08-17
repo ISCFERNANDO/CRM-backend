@@ -30,5 +30,14 @@ export enum Messages {
     USER_NOT_FOUND = 'No se encontró el usuario',
     EMAIL_OR_PASSWORD_NOT_FOUND = 'Correo y/o contraseña incorrecto(s)',
     DELETE_USER_OK = 'El usuario se eliminó correctamente',
-    ERROR_LOGIN = 'Ocurrió un error al iniciar sesión'
+    ERROR_LOGIN = 'Ocurrió un error al iniciar sesión',
+
+    ADD_CUSTOMER_OK = 'El cliente se agregó correctamente',
+    ADD_CUSTOMER_ERROR = 'Ocurrió un error al agregar el cliente',
+    UPDATE_CUSTOMER_OK = 'El cliente se actualizó correctamente',
+    DELETE_CUSTOMER_OK = 'El cliente se eliminó correctamente',
+    DELETE_CUSTOMER_ERROR = 'Ocurrió un error al eliminar el cliente',
+    GET_CUSTOMER_ERROR = 'Ocurrió un error al obtener los clientes',
+    CUSTOMER_NOT_FOUND = 'No se encontró el cliente',
+    CUSTOMER_EXIST = 'Ya existe un acceso con el mismo nombre'
 }

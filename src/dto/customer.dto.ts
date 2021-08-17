@@ -5,7 +5,7 @@ export interface CustomerDTO {
     tipoPersona: string;
     razonSocial?: string;
     nombreEmpresa?: string;
-    sitioWeb: string;
+    sitioWeb?: string;
     photoUrl?: string;
     telefonos: TelefonoDTO[];
     representante: PersonDTO;
@@ -24,7 +24,7 @@ export interface DireccionDTO {
 }
 
 export interface TelefonoDTO {
-    tipoTelefono: string;
+    tipoTelefono: number;
     telefono: string;
     extension: string;
 }

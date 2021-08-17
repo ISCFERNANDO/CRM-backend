@@ -6,6 +6,7 @@ export interface ICustomerRepository {
     getAllCustomers(): Promise<Array<any>>;
     addCustomer(contract: CustomerDTO): Promise<any>;
     updateCustomer(contract: CustomerDTO): Promise<any>;
+    partialUpdateCustomer(contract: CustomerDTO): Promise<any>;
     deleteCustomer(id: string): Promise<any>;
     findById(id: string): Promise<any>;
     deleteByIds(ids: string[]): Promise<any>;
@@ -24,6 +25,9 @@ export class CustomerRepository implements ICustomerRepository {
             contract.id,
             this.customerDtoToModel(contract)
         );
+
+    partialUpdateCustomer = (contract: CustomerDTO): Promise<any> =>
+        CustomerModel.findByIdAndUpdate(contract.id, { ...contract });
 
     deleteCustomer = (id: string): Promise<any> =>
         CustomerModel.findByIdAndUpdate(id, { deleted: true });
