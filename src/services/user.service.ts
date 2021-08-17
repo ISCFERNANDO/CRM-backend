@@ -42,12 +42,7 @@ export class UserService implements IUserService {
             const data = users.map((item) => this.mapUser(item));
             return Promise.all(data);
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.GET_USERS_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -57,21 +52,16 @@ export class UserService implements IUserService {
     ): Promise<void | UserDTO> {
         try {
             if (await this.checkIfExistAccessName(contract.name)) {
-                next(
-                    new HttpException(HttpStatus.CONFLICT, Messages.USER_EXIST)
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_EXIST
                 );
-                return;
             }
             const data = await this.userRepository.addUser(contract);
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_USER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -81,30 +71,22 @@ export class UserService implements IUserService {
     ): Promise<void | UserDTO> {
         try {
             if (await this.checkIfExistAccessName(contract.name, contract.id)) {
-                next(
-                    new HttpException(HttpStatus.CONFLICT, Messages.USER_EXIST)
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_EXIST
                 );
-                return;
             }
             const data = await this.userRepository.updateUser(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.USER_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.USER_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_USER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -114,11 +96,15 @@ export class UserService implements IUserService {
     ): Promise<void | UserDTO> {
         try {
             const data = await this.userRepository.findById(id);
+            if (!data) {
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.USER_NOT_FOUND
+                );
+            }
             return this.mapUser(data, true);
         } catch (error) {
-            next(
-                new HttpException(HttpStatus.NOT_FOUND, Messages.USER_NOT_FOUND)
-            );
+            next(error);
         }
     }
 
@@ -126,20 +112,15 @@ export class UserService implements IUserService {
         try {
             const isSystem = await this.userRepository.isSystem(id);
             if (isSystem) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.USER_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_NOT_REMOVABLE
                 );
-                return;
             }
             await this.userRepository.deleteUser(id);
             return true;
         } catch (error) {
-            next(
-                new HttpException(HttpStatus.NOT_FOUND, Messages.USER_NOT_FOUND)
-            );
+            next(error);
         }
     }
 
@@ -149,20 +130,15 @@ export class UserService implements IUserService {
     ): Promise<boolean | void> {
         try {
             if (await this.checkIfAnyIsFromSystem(ids)) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.USER_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.USER_NOT_REMOVABLE
                 );
-                return;
             }
             await this.userRepository.deleteByIds(ids);
             return true;
         } catch (error) {
-            next(
-                new HttpException(HttpStatus.NOT_FOUND, Messages.USER_NOT_FOUND)
-            );
+            next(error);
         }
     }
 
@@ -173,23 +149,15 @@ export class UserService implements IUserService {
         try {
             const data = await this.userRepository.partialUpdateUser(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.USER_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.USER_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_USER_ERROR
-                )
-            );
+            next(error);
         }
     }
 

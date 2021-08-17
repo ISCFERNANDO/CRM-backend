@@ -34,13 +34,7 @@ export class CustomerService implements ICustomerService {
             const customers = await this.customerRepository.getAllCustomers();
             return customers.map(this.mapCustomer);
         } catch (error) {
-            console.log('errors ==> ', error);
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.GET_CUSTOMER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -53,12 +47,7 @@ export class CustomerService implements ICustomerService {
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_CUSTOMER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -69,23 +58,15 @@ export class CustomerService implements ICustomerService {
         try {
             const data = await this.customerRepository.updateCustomer(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.CUSTOMER_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.CUSTOMER_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_CUSTOMER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -98,23 +79,15 @@ export class CustomerService implements ICustomerService {
                 contract
             );
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.CUSTOMER_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.CUSTOMER_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_CUSTOMER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -124,23 +97,15 @@ export class CustomerService implements ICustomerService {
     ): Promise<boolean | void> {
         try {
             if (!(await this.customerRepository.findById(id))) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.CUSTOMER_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.CUSTOMER_NOT_FOUND
                 );
-                return;
             }
             await this.customerRepository.deleteCustomer(id);
             return true;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.DELETE_CUSTOMER_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -152,12 +117,7 @@ export class CustomerService implements ICustomerService {
             const data = await this.customerRepository.findById(id);
             return this.mapCustomer(data);
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.CUSTOMER_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
 
@@ -169,12 +129,7 @@ export class CustomerService implements ICustomerService {
             await this.customerRepository.deleteByIds(ids);
             return true;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.CUSTOMER_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
 

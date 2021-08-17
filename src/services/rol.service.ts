@@ -38,12 +38,7 @@ export class RollService implements IRollService {
             const rolls = await this.rollRepository.getAllRol();
             return rolls.map((item) => this.mapRoll(item));
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.GET_ROLLS_ERROR
-                )
-            );
+            next(error);
         }
     }
     public async addRoll(
@@ -56,21 +51,16 @@ export class RollService implements IRollService {
                     contract.name
                 )
             ) {
-                next(
-                    new HttpException(HttpStatus.CONFLICT, Messages.ROLL_EXIST)
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_EXIST
                 );
-                return;
             }
             const data = await this.rollRepository.addRol(contract);
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_ROLL_ERROR
-                )
-            );
+            next(error);
         }
     }
     public async findRollById(
@@ -79,6 +69,12 @@ export class RollService implements IRollService {
     ): Promise<void | RolDTO> {
         try {
             const data = await this.rollRepository.findById(id);
+            if (!data) {
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.ROLL_NOT_FOUND
+                );
+            }
             const detailsRoll: RolDTO = this.mapRoll(data, true);
             const accesses: AccessDTO[] = await this.getListAccesosQueNoPertenecenRol(
                 detailsRoll.accesess.map((item) => item.id)
@@ -86,9 +82,7 @@ export class RollService implements IRollService {
             detailsRoll.accesess.push(...accesses);
             return detailsRoll;
         } catch (error) {
-            next(
-                new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND)
-            );
+            next(error);
         }
     }
     public async updateRoll(
@@ -102,30 +96,22 @@ export class RollService implements IRollService {
                     contract.id
                 )
             ) {
-                next(
-                    new HttpException(HttpStatus.CONFLICT, Messages.ROLL_EXIST)
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_EXIST
                 );
-                return;
             }
             const data = await this.rollRepository.updateRol(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.ROLL_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.ROLL_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_ROLL_ERROR
-                )
-            );
+            next(error);
         }
     }
     public async deleteRoll(
@@ -135,23 +121,15 @@ export class RollService implements IRollService {
         try {
             const isSystem = await this.rollRepository.isSystem(id);
             if (isSystem) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ROLL_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_NOT_REMOVABLE
                 );
-                return;
             }
             await this.rollRepository.deleteRol(id);
             return true;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.ACCESS_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
     public async deleteRollsByIds(
@@ -160,20 +138,15 @@ export class RollService implements IRollService {
     ): Promise<boolean | void> {
         try {
             if (await this.checkIfAnyIsFromSystem(ids)) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ROLL_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ROLL_NOT_REMOVABLE
                 );
-                return;
             }
             await this.rollRepository.deleteByIds(ids);
             return true;
         } catch (error) {
-            next(
-                new HttpException(HttpStatus.NOT_FOUND, Messages.ROLL_NOT_FOUND)
-            );
+            next(error);
         }
     }
     public async partialUpdateRoll(
@@ -183,23 +156,15 @@ export class RollService implements IRollService {
         try {
             const data = await this.rollRepository.partialUpdateRol(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.ROLL_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.ROLL_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_ROLL_ERROR
-                )
-            );
+            next(error);
         }
     }
 

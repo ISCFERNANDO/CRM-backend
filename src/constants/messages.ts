@@ -39,5 +39,6 @@ export enum Messages {
     DELETE_CUSTOMER_ERROR = 'Ocurrió un error al eliminar el cliente',
     GET_CUSTOMER_ERROR = 'Ocurrió un error al obtener los clientes',
     CUSTOMER_NOT_FOUND = 'No se encontró el cliente',
-    CUSTOMER_EXIST = 'Ya existe un acceso con el mismo nombre'
+    CUSTOMER_EXIST = 'Ya existe un acceso con el mismo nombre',
+    INTERNAL_SERVER_ERROR = 'Error interno del servidor'
 }

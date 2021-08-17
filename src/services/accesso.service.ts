@@ -35,12 +35,7 @@ export class AccessoService implements IAccessoService {
             const access = await this.accessRepository.getAllAccess();
             return access.map(this.mapAccess);
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.GET_ACCESS_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -50,24 +45,16 @@ export class AccessoService implements IAccessoService {
     ): Promise<AccessDTO | void> {
         try {
             if (await this.checkIfExistAccessName(contract.name)) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ACCESS_EXIST
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ACCESS_EXIST
                 );
-                return;
             }
             const data = await this.accessRepository.addAccess(contract);
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    Messages.ADD_ACCESS_ERROR
-                )
-            );
+            next(error);
         }
     }
 
@@ -77,33 +64,22 @@ export class AccessoService implements IAccessoService {
     ): Promise<AccessDTO | void> {
         try {
             if (await this.checkIfExistAccessName(contract.name, contract.id)) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ACCESS_EXIST
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ACCESS_EXIST
                 );
-                return;
             }
             const data = await this.accessRepository.updateAccess(contract);
             if (!data) {
-                next(
-                    new HttpException(
-                        HttpStatus.NOT_FOUND,
-                        Messages.ACCESS_NOT_FOUND
-                    )
+                throw new HttpException(
+                    HttpStatus.NOT_FOUND,
+                    Messages.ACCESS_NOT_FOUND
                 );
-                return;
             }
             contract.id = data._id;
             return contract;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.ACCESS_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
 
@@ -117,23 +93,15 @@ export class AccessoService implements IAccessoService {
         try {
             const isSystem = await this.accessRepository.isSystem(id);
             if (isSystem) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ACCESS_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ACCESS_NOT_REMOVABLE
                 );
-                return;
             }
             await this.accessRepository.deleteAccess(id);
             return true;
         } catch (error) {
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.ACCESS_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
 
@@ -143,14 +111,15 @@ export class AccessoService implements IAccessoService {
     ): Promise<AccessDTO | void> {
         try {
             const data = await this.accessRepository.findById(id);
-            return this.mapAccess(data);
-        } catch (error) {
-            next(
-                new HttpException(
+            if (!data) {
+                throw new HttpException(
                     HttpStatus.NOT_FOUND,
                     Messages.ACCESS_NOT_FOUND
-                )
-            );
+                );
+            }
+            return this.mapAccess(data);
+        } catch (error) {
+            next(error);
         }
     }
 
@@ -160,24 +129,15 @@ export class AccessoService implements IAccessoService {
     ): Promise<boolean | void> {
         try {
             if (await this.checkIfAnyIsFromSystem(ids)) {
-                next(
-                    new HttpException(
-                        HttpStatus.CONFLICT,
-                        Messages.ACCESS_NOT_REMOVABLE
-                    )
+                throw new HttpException(
+                    HttpStatus.CONFLICT,
+                    Messages.ACCESS_NOT_REMOVABLE
                 );
-                return;
             }
             await this.accessRepository.deleteByIds(ids);
             return true;
         } catch (error) {
-            console.log(error);
-            next(
-                new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.ACCESS_NOT_FOUND
-                )
-            );
+            next(error);
         }
     }
 
