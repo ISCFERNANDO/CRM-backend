@@ -4,9 +4,9 @@
   "description": "Servicios rest para proyecto de CRM",
   "main": "index.js",
   "scripts": {
-    "start": "node crm-backend/index.js",
+    "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "tsc -w & nodemon crm-backend/index.js",
+    "dev": "tsc -w & nodemon dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "npx git-cz"
   },
