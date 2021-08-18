@@ -1,4 +1,3 @@
-import { NextFunction } from 'express';
 import { Service } from 'typedi';
 import HttpException from '../common/http.exception';
 import { HttpStatus } from '../constants/http-status';
@@ -15,29 +14,22 @@ export class AuthService {
         private userService: UserService
     ) {}
 
-    async login(
-        loginContract: LoginRequest,
-        next: NextFunction
-    ): Promise<LoginResponse | void> {
-        try {
-            const data = await this.userRepository.findByEmailAndPassword(
-                loginContract.email,
-                loginContract.password
+    async login(loginContract: LoginRequest): Promise<LoginResponse | void> {
+        const data = await this.userRepository.findByEmailAndPassword(
+            loginContract.email,
+            loginContract.password
+        );
+        if (!data) {
+            throw new HttpException(
+                HttpStatus.NOT_FOUND,
+                Messages.EMAIL_OR_PASSWORD_NOT_FOUND
             );
-            if (!data) {
-                throw new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.EMAIL_OR_PASSWORD_NOT_FOUND
-                );
-            }
-            const userData: LoginResponse = await this.userService.mapUser(
-                data,
-                true
-            );
-            userData.token = createToken(userData);
-            return userData;
-        } catch (error) {
-            next(error);
         }
+        const userData: LoginResponse = await this.userService.mapUser(
+            data,
+            true
+        );
+        userData.token = createToken(userData);
+        return userData;
     }
 }

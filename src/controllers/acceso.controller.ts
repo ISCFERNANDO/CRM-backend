@@ -15,8 +15,12 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const data = await this.accessService.getAllAccess(next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const data = await this.accessService.getAllAccess();
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async addAccess(
@@ -24,9 +28,13 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: AccessDTO = req.body;
-        const data = await this.accessService.addAccess(requestBody, next);
-        responseHandler(res, Messages.ADD_ACCESS_OK, data);
+        try {
+            const requestBody: AccessDTO = req.body;
+            const data = await this.accessService.addAccess(requestBody);
+            responseHandler(res, Messages.ADD_ACCESS_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async updateAccess(
@@ -34,10 +42,14 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: AccessDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.accessService.updateAccess(requestBody, next);
-        responseHandler(res, Messages.UPDATE_ACCESS_OK, data);
+        try {
+            const requestBody: AccessDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.accessService.updateAccess(requestBody);
+            responseHandler(res, Messages.UPDATE_ACCESS_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteAccess(
@@ -45,9 +57,13 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.accessService.deleteAccess(id, next);
-        responseHandler(res, Messages.DELETE_ACCESS_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.accessService.deleteAccess(id);
+            responseHandler(res, Messages.DELETE_ACCESS_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async findById(
@@ -55,9 +71,13 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.accessService.findAccessById(id, next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.accessService.findAccessById(id);
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteAccessess(
@@ -65,9 +85,13 @@ export class AccessoController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const ids: string = req.query.ids as string;
-        const items: string[] = ids.split(',').map((item) => item.trim());
-        const data = await this.accessService.deleteAccessesByIds(items, next);
-        responseHandler(res, Messages.DELETE_ACCESS_OK, data);
+        try {
+            const ids: string = req.query.ids as string;
+            const items: string[] = ids.split(',').map((item) => item.trim());
+            const data = await this.accessService.deleteAccessesByIds(items);
+            responseHandler(res, Messages.DELETE_ACCESS_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

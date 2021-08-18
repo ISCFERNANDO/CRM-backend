@@ -15,8 +15,12 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const data = await this.customerService.getAllCustomers(next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const data = await this.customerService.getAllCustomers();
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async addCustomer(
@@ -24,9 +28,13 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: CustomerDTO = req.body;
-        const data = await this.customerService.addCustomer(requestBody, next);
-        responseHandler(res, Messages.ADD_CUSTOMER_OK, data);
+        try {
+            const requestBody: CustomerDTO = req.body;
+            const data = await this.customerService.addCustomer(requestBody);
+            responseHandler(res, Messages.ADD_CUSTOMER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async updateCustomer(
@@ -34,13 +42,14 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: CustomerDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.customerService.updateCustomer(
-            requestBody,
-            next
-        );
-        responseHandler(res, Messages.UPDATE_CUSTOMER_OK, data);
+        try {
+            const requestBody: CustomerDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.customerService.updateCustomer(requestBody);
+            responseHandler(res, Messages.UPDATE_CUSTOMER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteCustomer(
@@ -48,9 +57,13 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.customerService.deleteCustomer(id, next);
-        responseHandler(res, Messages.DELETE_CUSTOMER_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.customerService.deleteCustomer(id);
+            responseHandler(res, Messages.DELETE_CUSTOMER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async findById(
@@ -58,9 +71,13 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.customerService.findById(id, next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.customerService.findById(id);
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteCustomers(
@@ -68,19 +85,26 @@ export class CustomerController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const ids: string = req.query.ids as string;
-        const items: string[] = ids.split(',').map((item) => item.trim());
-        const data = await this.customerService.deleteByIds(items, next);
-        responseHandler(res, Messages.DELETE_CUSTOMER_OK, data);
+        try {
+            const ids: string = req.query.ids as string;
+            const items: string[] = ids.split(',').map((item) => item.trim());
+            const data = await this.customerService.deleteByIds(items);
+            responseHandler(res, Messages.DELETE_CUSTOMER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async partialUpdate(req: Request, res: Response, next: NextFunction) {
-        const requestBody: CustomerDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.customerService.partialUpdateCustomer(
-            requestBody,
-            next
-        );
-        responseHandler(res, Messages.UPDATE_CUSTOMER_OK, data);
+        try {
+            const requestBody: CustomerDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.customerService.partialUpdateCustomer(
+                requestBody
+            );
+            responseHandler(res, Messages.UPDATE_CUSTOMER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

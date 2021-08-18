@@ -14,8 +14,12 @@ export class AuthController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const reqBody: LoginRequest = req.body;
-        const data = await this.authService.login(reqBody, next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const reqBody: LoginRequest = req.body;
+            const data = await this.authService.login(reqBody);
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

@@ -14,8 +14,12 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const data = await this.rollService.getAllRolls(next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const data = await this.rollService.getAllRolls();
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async addRoll(
@@ -23,9 +27,13 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: RolDTO = req.body;
-        const data = await this.rollService.addRoll(requestBody, next);
-        responseHandler(res, Messages.ADD_ROLL_OK, data);
+        try {
+            const requestBody: RolDTO = req.body;
+            const data = await this.rollService.addRoll(requestBody);
+            responseHandler(res, Messages.ADD_ROLL_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async updateRoll(
@@ -33,10 +41,14 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: RolDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.rollService.updateRoll(requestBody, next);
-        responseHandler(res, Messages.ADD_ROLL_OK, data);
+        try {
+            const requestBody: RolDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.rollService.updateRoll(requestBody);
+            responseHandler(res, Messages.ADD_ROLL_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async findById(
@@ -44,9 +56,13 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.rollService.findRollById(id, next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.rollService.findRollById(id);
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteRoll(
@@ -54,9 +70,13 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.rollService.deleteRoll(id, next);
-        responseHandler(res, Messages.DELETE_ROLL_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.rollService.deleteRoll(id);
+            responseHandler(res, Messages.DELETE_ROLL_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async deleteRolls(
@@ -64,10 +84,14 @@ export class RollController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const ids: string = req.query.ids as string;
-        const items: string[] = ids.split(',').map((item) => item.trim());
-        const data = await this.rollService.deleteRollsByIds(items, next);
-        responseHandler(res, Messages.DELETE_ROLL_OK, data);
+        try {
+            const ids: string = req.query.ids as string;
+            const items: string[] = ids.split(',').map((item) => item.trim());
+            const data = await this.rollService.deleteRollsByIds(items);
+            responseHandler(res, Messages.DELETE_ROLL_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public async partialUpdate(
@@ -75,12 +99,13 @@ export class RollController {
         res: Response,
         next: NextFunction
     ) {
-        const requestBody: RolDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.rollService.partialUpdateRoll(
-            requestBody,
-            next
-        );
-        responseHandler(res, Messages.ADD_ROLL_OK, data);
+        try {
+            const requestBody: RolDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.rollService.partialUpdateRoll(requestBody);
+            responseHandler(res, Messages.ADD_ROLL_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

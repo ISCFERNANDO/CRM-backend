@@ -9,7 +9,11 @@ export class FileUploadController {
     constructor(private uploadService: FileUploadService) {}
 
     async uploadFile(req: Request, res: Response, next: NextFunction) {
-        const data = await this.uploadService.uploadFile(req, next);
-        responseHandler(res, Messages.UPLOAD_SUCCESS, data);
+        try {
+            const data = await this.uploadService.uploadFile(req);
+            responseHandler(res, Messages.UPLOAD_SUCCESS, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

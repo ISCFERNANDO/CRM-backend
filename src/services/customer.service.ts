@@ -8,129 +8,76 @@ import { CustomerDTO } from './../dto/customer.dto';
 
 export interface ICustomerService {
     getAllCustomers(next: NextFunction): Promise<CustomerDTO[] | void>;
-    addCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
-    ): Promise<CustomerDTO | void>;
-    updateCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
-    ): Promise<CustomerDTO | void>;
-    partialUpdateCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
-    ): Promise<CustomerDTO | void>;
-    deleteCustomer(id: string, next: NextFunction): Promise<boolean | void>;
-    findById(id: string, next: NextFunction): Promise<CustomerDTO | void>;
-    deleteByIds(ids: string[], next: NextFunction): Promise<boolean | void>;
+    addCustomer(contract: CustomerDTO): Promise<CustomerDTO | void>;
+    updateCustomer(contract: CustomerDTO): Promise<CustomerDTO | void>;
+    partialUpdateCustomer(contract: CustomerDTO): Promise<CustomerDTO | void>;
+    deleteCustomer(id: string): Promise<boolean | void>;
+    findById(id: string): Promise<CustomerDTO | void>;
+    deleteByIds(ids: string[]): Promise<boolean | void>;
 }
 
 @Service()
 export class CustomerService implements ICustomerService {
     constructor(private customerRepository: CustomerRepository) {}
 
-    async getAllCustomers(next: NextFunction): Promise<void | CustomerDTO[]> {
-        try {
-            const customers = await this.customerRepository.getAllCustomers();
-            return customers.map(this.mapCustomer);
-        } catch (error) {
-            next(error);
-        }
+    async getAllCustomers(): Promise<void | CustomerDTO[]> {
+        const customers = await this.customerRepository.getAllCustomers();
+        return customers.map(this.mapCustomer);
     }
 
-    async addCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
-    ): Promise<void | CustomerDTO> {
-        try {
-            const data = await this.customerRepository.addCustomer(contract);
-            contract.id = data._id;
-            return contract;
-        } catch (error) {
-            next(error);
-        }
+    async addCustomer(contract: CustomerDTO): Promise<void | CustomerDTO> {
+        const data = await this.customerRepository.addCustomer(contract);
+        contract.id = data._id;
+        return contract;
     }
 
-    async updateCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
-    ): Promise<void | CustomerDTO> {
-        try {
-            const data = await this.customerRepository.updateCustomer(contract);
-            if (!data) {
-                throw new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.CUSTOMER_NOT_FOUND
-                );
-            }
-            contract.id = data._id;
-            return contract;
-        } catch (error) {
-            next(error);
+    async updateCustomer(contract: CustomerDTO): Promise<void | CustomerDTO> {
+        const data = await this.customerRepository.updateCustomer(contract);
+        if (!data) {
+            throw new HttpException(
+                HttpStatus.NOT_FOUND,
+                Messages.CUSTOMER_NOT_FOUND
+            );
         }
+        contract.id = data._id;
+        return contract;
     }
 
     async partialUpdateCustomer(
-        contract: CustomerDTO,
-        next: NextFunction
+        contract: CustomerDTO
     ): Promise<void | CustomerDTO> {
-        try {
-            const data = await this.customerRepository.partialUpdateCustomer(
-                contract
+        const data = await this.customerRepository.partialUpdateCustomer(
+            contract
+        );
+        if (!data) {
+            throw new HttpException(
+                HttpStatus.NOT_FOUND,
+                Messages.CUSTOMER_NOT_FOUND
             );
-            if (!data) {
-                throw new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.CUSTOMER_NOT_FOUND
-                );
-            }
-            contract.id = data._id;
-            return contract;
-        } catch (error) {
-            next(error);
         }
+        contract.id = data._id;
+        return contract;
     }
 
-    async deleteCustomer(
-        id: string,
-        next: NextFunction
-    ): Promise<boolean | void> {
-        try {
-            if (!(await this.customerRepository.findById(id))) {
-                throw new HttpException(
-                    HttpStatus.NOT_FOUND,
-                    Messages.CUSTOMER_NOT_FOUND
-                );
-            }
-            await this.customerRepository.deleteCustomer(id);
-            return true;
-        } catch (error) {
-            next(error);
+    async deleteCustomer(id: string): Promise<boolean | void> {
+        if (!(await this.customerRepository.findById(id))) {
+            throw new HttpException(
+                HttpStatus.NOT_FOUND,
+                Messages.CUSTOMER_NOT_FOUND
+            );
         }
+        await this.customerRepository.deleteCustomer(id);
+        return true;
     }
 
-    async findById(
-        id: string,
-        next: NextFunction
-    ): Promise<void | CustomerDTO> {
-        try {
-            const data = await this.customerRepository.findById(id);
-            return this.mapCustomer(data);
-        } catch (error) {
-            next(error);
-        }
+    async findById(id: string): Promise<void | CustomerDTO> {
+        const data = await this.customerRepository.findById(id);
+        return this.mapCustomer(data);
     }
 
-    async deleteByIds(
-        ids: string[],
-        next: NextFunction
-    ): Promise<boolean | void> {
-        try {
-            await this.customerRepository.deleteByIds(ids);
-            return true;
-        } catch (error) {
-            next(error);
-        }
+    async deleteByIds(ids: string[]): Promise<boolean | void> {
+        await this.customerRepository.deleteByIds(ids);
+        return true;
     }
 
     private mapCustomer(customer: any): CustomerDTO {

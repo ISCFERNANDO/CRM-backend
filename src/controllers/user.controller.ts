@@ -14,8 +14,12 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const data = await this.usersService.getAllUsers(next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const data = await this.usersService.getAllUsers();
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async addUser(
@@ -23,9 +27,13 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: UserDTO = req.body;
-        const data = await this.usersService.addUser(requestBody, next);
-        responseHandler(res, Messages.ADD_USER_OK, data);
+        try {
+            const requestBody: UserDTO = req.body;
+            const data = await this.usersService.addUser(requestBody);
+            responseHandler(res, Messages.ADD_USER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async updateUser(
@@ -33,10 +41,14 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const requestBody: UserDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.usersService.updateUser(requestBody, next);
-        responseHandler(res, Messages.UPDATE_USER_OK, data);
+        try {
+            const requestBody: UserDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.usersService.updateUser(requestBody);
+            responseHandler(res, Messages.UPDATE_USER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async findById(
@@ -44,9 +56,13 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.usersService.findUserById(id, next);
-        responseHandler(res, Messages.OPERATION_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.usersService.findUserById(id);
+            responseHandler(res, Messages.OPERATION_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async deleteUser(
@@ -54,9 +70,13 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const { id } = req.params;
-        const data = await this.usersService.deleteUser(id, next);
-        responseHandler(res, Messages.DELETE_USER_OK, data);
+        try {
+            const { id } = req.params;
+            const data = await this.usersService.deleteUser(id);
+            responseHandler(res, Messages.DELETE_USER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async deleteUsers(
@@ -64,19 +84,24 @@ export class UserController {
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const ids: string = req.query.ids as string;
-        const items: string[] = ids.split(',').map((item) => item.trim());
-        const data = await this.usersService.deleteUsersByIds(items, next);
-        responseHandler(res, Messages.DELETE_USER_OK, data);
+        try {
+            const ids: string = req.query.ids as string;
+            const items: string[] = ids.split(',').map((item) => item.trim());
+            const data = await this.usersService.deleteUsersByIds(items);
+            responseHandler(res, Messages.DELETE_USER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 
     async partialUpdate(req: Request, res: Response, next: NextFunction) {
-        const requestBody: UserDTO = req.body;
-        requestBody.id = req.params.id;
-        const data = await this.usersService.partialUpdateUser(
-            requestBody,
-            next
-        );
-        responseHandler(res, Messages.ADD_USER_OK, data);
+        try {
+            const requestBody: UserDTO = req.body;
+            requestBody.id = req.params.id;
+            const data = await this.usersService.partialUpdateUser(requestBody);
+            responseHandler(res, Messages.ADD_USER_OK, data);
+        } catch (error) {
+            next(error);
+        }
     }
 }

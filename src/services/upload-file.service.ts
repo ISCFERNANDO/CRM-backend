@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express';
+import { Request } from 'express';
 import * as formidable from 'formidable';
 import * as fs from 'fs';
 import { join } from 'path';
@@ -9,31 +9,20 @@ import { removeSpecialCharsInUrl } from '../utils/string-utils';
 
 @Service()
 export class FileUploadService {
-    async uploadFile(
-        request: Request,
-        next: NextFunction
-    ): Promise<Object | void> {
-        try {
-            const { files } = await this.formidableParse(request);
-            const fileName = `${new Date().getTime()}_${removeSpecialCharsInUrl(
-                files.image.name
-            )}`;
-            const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${fileName}`;
-            const oldPath = files.image.path;
-            const pathDirectory = join(
-                __dirname,
-                '../public',
-                DIR_IMG_PROFILE_USR
-            );
-            createDirectoryIfNotExist(pathDirectory);
+    async uploadFile(request: Request): Promise<Object | void> {
+        const { files } = await this.formidableParse(request);
+        const fileName = `${new Date().getTime()}_${removeSpecialCharsInUrl(
+            files.image.name
+        )}`;
+        const imageUrl = `${process.env.HOST}:${process.env.PORT}/${DIR_IMG_PROFILE_USR}/${fileName}`;
+        const oldPath = files.image.path;
+        const pathDirectory = join(__dirname, '../public', DIR_IMG_PROFILE_USR);
+        createDirectoryIfNotExist(pathDirectory);
 
-            const newPath = join(pathDirectory, fileName);
-            const data = fs.readFileSync(oldPath);
-            await createFile(newPath, data);
-            return { fileName, imageUrl };
-        } catch (error) {
-            next(error);
-        }
+        const newPath = join(pathDirectory, fileName);
+        const data = fs.readFileSync(oldPath);
+        await createFile(newPath, data);
+        return { fileName, imageUrl };
     }
 
     private formidableParse(request: Request): Promise<any> {
