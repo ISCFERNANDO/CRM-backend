@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Container } from 'typedi';
-import { UserController } from '../controllers/user.controller';
-import createUservalidator from '../validators/create-user.validator';
+import { UserController } from '../../../controllers/user.controller';
+import createUservalidator from '../../../validators/create-user.validator';
 
 const controller = Container.get(UserController);
 

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import 'reflect-metadata';
 import Container from 'typedi';
-import { AccessoController } from '../controllers/acceso.controller';
-import createAccessvalidator from '../validators/create-acceso.validator';
+import { AccessoController } from '../../../controllers/acceso.controller';
+import createAccessvalidator from '../../../validators/create-acceso.validator';
 
 const controller = Container.get(AccessoController);
 

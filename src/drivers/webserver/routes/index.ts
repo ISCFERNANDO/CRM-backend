@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authValidatorMiddleware } from '../middlewares/auth-validator.middleware';
+import { authValidatorMiddleware } from '../../../middlewares/auth-validator.middleware';
 import accesoRoutes from './acceso.routes';
 import authRoutes from './auth.routes';
 import customerRoutes from './customer.routes';

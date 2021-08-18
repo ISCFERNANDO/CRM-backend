@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import Container from 'typedi';
-import { RollController } from '../controllers/rol.controller';
-import createRollvalidator from '../validators/create-roll.validator';
+import { RollController } from '../../../controllers/rol.controller';
+import createRollvalidator from '../../../validators/create-roll.validator';
 
 const controller = Container.get(RollController);
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Container } from 'typedi';
-import { FileUploadController } from '../controllers/file-upload.controller';
+import { FileUploadController } from '../../../controllers/file-upload.controller';
 
 const controller = Container.get(FileUploadController);
 const fileUploadRoute = Router();
