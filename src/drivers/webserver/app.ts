@@ -30,7 +30,7 @@ export class App {
         this._app.use(this.haltOnTimedout);
         this._app.use(
             '/images',
-            express.static(join(__dirname, 'public/images'))
+            express.static(join(__dirname, '../..', 'public/images'))
         );
         this._app.use('/crm-api', routes);
         this._app.use(errorHandler);
