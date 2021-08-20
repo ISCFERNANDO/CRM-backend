@@ -19,27 +19,27 @@ const createCustomervalidator = async (
             .run(req),
         body('razonSocial')
             .optional({ nullable: true })
-            .isLength({ min: 1, max: 60 })
+            .isLength({ min: 0, max: 60 })
             .withMessage('La razon social debe tener entre 1 y 40 caracteres')
-            .matches(/^[a-z 0-9 ,.áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+$/i)
+            .matches(/^$|^[a-z 0-9 ,.áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+$/i)
             .withMessage(
                 'La razon social solo debe contener letras y números, punto y coma'
             )
             .run(req),
         body('nombreEmpresa')
             .optional({ nullable: true })
-            .isLength({ min: 1, max: 60 })
+            .isLength({ min: 0, max: 60 })
             .withMessage(
                 'El nombre de la empresa debe tener entre 1 y 40 caracteres'
             )
-            .matches(/^[a-z 0-9 ,áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+$/i)
+            .matches(/^$|^[a-z 0-9 ,áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+?$/i)
             .withMessage(
                 'El nombre de la empresa solo debe contener letras y números'
             )
             .run(req),
         body('sitioWeb')
             .optional({ nullable: true })
-            .matches(/(https?:\/\/.*)$/i)
+            .matches(/(https?:\/\/.*|)$/i)
             .withMessage('El sitio web no tiene el formato correcto')
             .run(req),
         body('photoUrl')
@@ -102,19 +102,19 @@ const createCustomervalidator = async (
             .run(req),
         body('representante.secondSurname')
             .optional({ nullable: true })
-            .isLength({ min: 1, max: 40 })
+            .isLength({ min: 0, max: 40 })
             .withMessage(
                 'El segundo apellido debe tener entre 1 y 40 caracteres'
             )
-            .matches(/^[a-z 0-9 ,áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+$/i)
+            .matches(/^$|^[a-z 0-9 ,áéíóúÁÉÍÓÚñÑ äëïöüÄËÏÖÜñÑ']+$/i)
             .withMessage(
                 'El segundo apellido solo debe contener letras y números'
             )
             .run(req),
         body('representante.email')
-            .isLength({ min: 1, max: 70 })
+            .isLength({ min: 0, max: 70 })
             .withMessage('El correo debe tener entre 1 y 70 caracteres')
-            .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i)
+            .matches(/^$|^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i)
             .withMessage('El email no tiene el formato correcto')
             .run(req),
 
@@ -151,16 +151,20 @@ const createCustomervalidator = async (
             .withMessage('El calle solo debe contener letras y números')
             .run(req),
         body('direccion.numeroExterior')
-            .isLength({ min: 1, max: 8 })
+            .isLength({ min: 0, max: 8 })
             .withMessage('El número exterior debe tener entre 1 y 8 caracteres')
             .matches(/^([0-9]+|(S\/N)|(Lote [0-9]+))$/i)
-            .withMessage('El número exterior solo debe tener números ó S/N')
+            .withMessage(
+                'El número exterior solo debe tener números, S/N ó Lote'
+            )
             .run(req),
         body('direccion.numeroInterior')
-            .isLength({ min: 1, max: 8 })
+            .isLength({ min: 0, max: 8 })
             .withMessage('El número interior debe tener entre 1 y 8 caracteres')
-            .matches(/^([0-9]+|(S\/N)|(Lote [0-9]+))$/i)
-            .withMessage('El número interior solo debe tener números ó S/N')
+            .matches(/^$|^([0-9]+|(S\/N)|(Lote [0-9]+))$/i)
+            .withMessage(
+                'El número interior solo debe tener números, S/N ó Lote'
+            )
             .run(req)
     ];
 
