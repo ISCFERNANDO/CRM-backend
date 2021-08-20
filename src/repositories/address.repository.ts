@@ -18,7 +18,6 @@ export class MultiServiciosAddressRepository implements IAddressRepository {
 
         try {
             const response: any = await axios.get(fullRoute);
-            console.log('response => ', response);
             if (!response) return null;
 
             const data: ResponseAddressMultiServicioDTO = response.data;
