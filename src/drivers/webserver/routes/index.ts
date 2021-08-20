@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authValidatorMiddleware } from '../../../middlewares/auth-validator.middleware';
 import accesoRoutes from './acceso.routes';
+import addressRoutes from './address.routes';
 import authRoutes from './auth.routes';
 import customerRoutes from './customer.routes';
 import rollRoutes from './roll.routes';
@@ -15,7 +16,8 @@ routes.use(
     rollRoutes,
     userRoutes,
     uploadRoutes,
-    customerRoutes
+    customerRoutes,
+    addressRoutes
 );
 
 export default routes;

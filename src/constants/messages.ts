@@ -40,5 +40,7 @@ export enum Messages {
     GET_CUSTOMER_ERROR = 'Ocurrió un error al obtener los clientes',
     CUSTOMER_NOT_FOUND = 'No se encontró el cliente',
     CUSTOMER_EXIST = 'Ya existe un acceso con el mismo nombre',
-    INTERNAL_SERVER_ERROR = 'Error interno del servidor'
+    INTERNAL_SERVER_ERROR = 'Error interno del servidor',
+
+    CP_NOT_FOUND = 'No se encontró el código postal'
 }
