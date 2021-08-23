@@ -14,6 +14,9 @@ export interface ICustomerService {
     deleteCustomer(id: string): Promise<boolean | void>;
     findById(id: string): Promise<CustomerDTO | void>;
     deleteByIds(ids: string[]): Promise<boolean | void>;
+    filterByCompayNameOrRepresentativeName(
+        subStr: string
+    ): Promise<CustomerDTO[] | void>;
 }
 
 @Service()
@@ -78,6 +81,15 @@ export class CustomerService implements ICustomerService {
     async deleteByIds(ids: string[]): Promise<boolean | void> {
         await this.customerRepository.deleteByIds(ids);
         return true;
+    }
+
+    async filterByCompayNameOrRepresentativeName(
+        subStr: string
+    ): Promise<void | CustomerDTO[]> {
+        const customers = await this.customerRepository.filterByCompayNameOrRepresentativeName(
+            subStr
+        );
+        return customers.map(this.mapCustomer);
     }
 
     private mapCustomer(customer: any): CustomerDTO {

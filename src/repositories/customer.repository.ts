@@ -10,6 +10,7 @@ export interface ICustomerRepository {
     deleteCustomer(id: string): Promise<any>;
     findById(id: string): Promise<any>;
     deleteByIds(ids: string[]): Promise<any>;
+    filterByCompayNameOrRepresentativeName(subStr: string): Promise<Array<any>>;
 }
 
 @Service()
@@ -39,6 +40,40 @@ export class CustomerRepository implements ICustomerRepository {
         const promises = ids.map(this.deleteCustomer);
         return Promise.all(promises);
     }
+
+    filterByCompayNameOrRepresentativeName = (
+        subStr: string
+    ): Promise<Array<any>> =>
+        CustomerModel.aggregate([
+            {
+                $addFields: {
+                    fullNameFilter: {
+                        $concat: [
+                            '$representante.name',
+                            '$representante.firstSurname',
+                            '$representante.secondSurname'
+                        ]
+                    }
+                }
+            },
+            {
+                $match: {
+                    deleted: false,
+                    $or: [
+                        {
+                            fullNameFilter: {
+                                $regex: `.*${subStr}.*`
+                            }
+                        },
+                        {
+                            nombreEmpresa: {
+                                $regex: `.*${subStr}.*`
+                            }
+                        }
+                    ]
+                }
+            }
+        ]).exec();
 
     private customerDtoToModel(contract: CustomerDTO): any {
         return {

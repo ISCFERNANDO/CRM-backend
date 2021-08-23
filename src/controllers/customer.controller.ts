@@ -16,7 +16,16 @@ export class CustomerController {
         next: NextFunction
     ): Promise<void> {
         try {
-            const data = await this.customerService.getAllCustomers();
+            const queryParams = req.query;
+            let data: CustomerDTO[] | any = [];
+            if (Object.keys(queryParams).length) {
+                const name: string = req.query.name as string;
+                data = await this.customerService.filterByCompayNameOrRepresentativeName(
+                    name
+                );
+            } else {
+                data = await this.customerService.getAllCustomers();
+            }
             responseHandler(res, Messages.OPERATION_OK, data);
         } catch (error) {
             next(error);
