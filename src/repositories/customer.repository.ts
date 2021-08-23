@@ -43,16 +43,19 @@ export class CustomerRepository implements ICustomerRepository {
 
     filterByCompayNameOrRepresentativeName = (
         subStr: string
-    ): Promise<Array<any>> =>
-        CustomerModel.aggregate([
+    ): Promise<Array<any>> => {
+        const filter = subStr.toLowerCase();
+        return CustomerModel.aggregate([
             {
                 $addFields: {
                     fullNameFilter: {
-                        $concat: [
-                            '$representante.name',
-                            '$representante.firstSurname',
-                            '$representante.secondSurname'
-                        ]
+                        $toLower: {
+                            $concat: [
+                                '$representante.name',
+                                '$representante.firstSurname',
+                                '$representante.secondSurname'
+                            ]
+                        }
                     }
                 }
             },
@@ -62,18 +65,19 @@ export class CustomerRepository implements ICustomerRepository {
                     $or: [
                         {
                             fullNameFilter: {
-                                $regex: `.*${subStr}.*`
+                                $regex: `.*${filter}.*`
                             }
                         },
                         {
                             nombreEmpresa: {
-                                $regex: `.*${subStr}.*`
+                                $regex: `.*${filter}.*`
                             }
                         }
                     ]
                 }
             }
         ]).exec();
+    };
 
     private customerDtoToModel(contract: CustomerDTO): any {
         return {
