@@ -1,18 +1,14 @@
-import * as mongoose from 'mongoose';
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
 
-mongoose.set('useFindAndModify', false);
-mongoose.set('debug', process.env.DEBUG);
-const connectionUrl = `mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`;
-mongoose
-    .connect(connectionUrl, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => {
-        console.log('connection established to mongodb');
-    })
-    .catch(() => {
-        console.log('connection fallida to mongodb');
-    });
-
-export default mongoose;
+export default createConnection({
+    type: 'mysql',
+    host: process.env.DB_HOST,
+    port: process.env.DB_HOST ? parseInt(process.env.DB_HOST) : 3306,
+    username: process.env.DB_USER_NAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    entities: [__dirname + '../entities'],
+    synchronize: true,
+    logging: false
+});
