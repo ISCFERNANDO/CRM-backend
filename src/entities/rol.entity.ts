@@ -4,7 +4,7 @@ import { RolToAccess } from './rol-access.entity';
 @Entity()
 export class Rol {
     @PrimaryColumn()
-    id: number;
+    id!: number;
 
     @Column()
     name: string;

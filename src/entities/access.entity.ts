@@ -5,7 +5,7 @@ import { UserToAccess } from './user-access.entity';
 @Entity()
 export class Access {
     @PrimaryColumn()
-    id: number;
+    id!: number;
 
     @Column()
     name: string;
@@ -14,7 +14,7 @@ export class Access {
     route: string;
 
     @Column()
-    description: string;
+    description?: string;
 
     @Column()
     active: boolean;
