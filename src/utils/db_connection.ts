@@ -13,7 +13,7 @@ const createMysqlConnection = () => {
             username: process.env.DB_USER_NAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            entities: [join(__dirname, '..', '/entities/**.*s')],
+            entities: [join(__dirname, '..', '/domain/entities/**.*s')],
             synchronize: false,
             logging: true
         })
