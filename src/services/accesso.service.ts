@@ -10,9 +10,9 @@ export interface IAccessoService {
     getAllAccess(): Promise<AccessDTO[] | void>;
     addAccess(contract: AccessDTO): Promise<AccessDTO | void>;
     updateAccess(contract: AccessDTO): Promise<AccessDTO | void>;
-    deleteAccess(id: string): Promise<boolean | void>;
-    findAccessById(id: string): Promise<AccessDTO | void>;
-    deleteAccessesByIds(ids: string[]): Promise<boolean | void>;
+    deleteAccess(id: number): Promise<boolean | void>;
+    findAccessById(id: number): Promise<AccessDTO | void>;
+    deleteAccessesByIds(ids: number[]): Promise<boolean | void>;
     mapAccess(item: any): AccessDTO;
 }
 
@@ -30,7 +30,7 @@ export class AccessoService implements IAccessoService {
             throw new HttpException(HttpStatus.CONFLICT, Messages.ACCESS_EXIST);
         }
         const data = await this.accessRepository.addAccess(contract);
-        contract.id = data._id;
+        contract.id = data.id;
         return contract;
     }
 
@@ -49,10 +49,10 @@ export class AccessoService implements IAccessoService {
         return contract;
     }
 
-    private checkIfExistAccessName = (name: string, id?: string) =>
+    private checkIfExistAccessName = (name: string, id?: number) =>
         this.accessRepository.checkIfExistAccessName(name, id);
 
-    public async deleteAccess(id: string): Promise<boolean | void> {
+    public async deleteAccess(id: number): Promise<boolean | void> {
         const isSystem = await this.accessRepository.isSystem(id);
         if (isSystem) {
             throw new HttpException(
@@ -64,7 +64,7 @@ export class AccessoService implements IAccessoService {
         return true;
     }
 
-    public async findAccessById(id: string): Promise<AccessDTO | void> {
+    public async findAccessById(id: number): Promise<AccessDTO | void> {
         const data = await this.accessRepository.findById(id);
         if (!data) {
             throw new HttpException(
@@ -75,7 +75,7 @@ export class AccessoService implements IAccessoService {
         return this.mapAccess(data);
     }
 
-    public async deleteAccessesByIds(ids: string[]): Promise<boolean | void> {
+    public async deleteAccessesByIds(ids: number[]): Promise<boolean | void> {
         if (await this.checkIfAnyIsFromSystem(ids)) {
             throw new HttpException(
                 HttpStatus.CONFLICT,
@@ -86,7 +86,7 @@ export class AccessoService implements IAccessoService {
         return true;
     }
 
-    private async checkIfAnyIsFromSystem(ids: string[]): Promise<boolean> {
+    private async checkIfAnyIsFromSystem(ids: number[]): Promise<boolean> {
         for (const id of ids) {
             if (await this.accessRepository.isSystem(id)) return true;
         }
@@ -95,7 +95,7 @@ export class AccessoService implements IAccessoService {
 
     public mapAccess(item: any): AccessDTO {
         return {
-            id: item._id,
+            id: item.id,
             name: item.name,
             route: item.route,
             description: item.description,

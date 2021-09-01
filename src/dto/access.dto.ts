@@ -1,5 +1,5 @@
 export interface AccessDTO {
-    id: string;
+    id: number;
     name: string;
     route: string;
     description?: string;
