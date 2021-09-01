@@ -44,7 +44,7 @@ export class AccessoController {
     ): Promise<void> {
         try {
             const requestBody: AccessDTO = req.body;
-            requestBody.id = req.params.id;
+            requestBody.id = parseInt(req.params.id);
             const data = await this.accessService.updateAccess(requestBody);
             responseHandler(res, Messages.UPDATE_ACCESS_OK, data);
         } catch (error) {
@@ -59,7 +59,7 @@ export class AccessoController {
     ): Promise<void> {
         try {
             const { id } = req.params;
-            const data = await this.accessService.deleteAccess(id);
+            const data = await this.accessService.deleteAccess(parseInt(id));
             responseHandler(res, Messages.DELETE_ACCESS_OK, data);
         } catch (error) {
             next(error);
@@ -73,7 +73,7 @@ export class AccessoController {
     ): Promise<void> {
         try {
             const { id } = req.params;
-            const data = await this.accessService.findAccessById(id);
+            const data = await this.accessService.findAccessById(parseInt(id));
             responseHandler(res, Messages.OPERATION_OK, data);
         } catch (error) {
             next(error);
@@ -87,7 +87,9 @@ export class AccessoController {
     ): Promise<void> {
         try {
             const ids: string = req.query.ids as string;
-            const items: string[] = ids.split(',').map((item) => item.trim());
+            const items: number[] = ids
+                .split(',')
+                .map((item) => parseInt(item.trim()));
             const data = await this.accessService.deleteAccessesByIds(items);
             responseHandler(res, Messages.DELETE_ACCESS_OK, data);
         } catch (error) {
