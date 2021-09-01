@@ -1,7 +1,10 @@
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import { AccessModel } from '../models';
+import { getRepository, Repository } from 'typeorm';
+import { Access } from '../domain/entities/access.entity';
 import { AccessDTO } from './../dto/access.dto';
+import { CrudRepository, ICrudRepository } from './crud.repository';
+
 export interface IAccessoRepository {
     getAllAccess(): Promise<Array<any>>;
 
@@ -9,61 +12,104 @@ export interface IAccessoRepository {
 
     updateAccess(contract: AccessDTO): Promise<any>;
 
-    deleteAccess(id: string): Promise<any>;
+    deleteAccess(id: number): Promise<any>;
 
-    findById(id: string): Promise<any>;
+    findById(id: number): Promise<any>;
 
-    deleteByIds(ids: string[]): Promise<any>;
+    deleteByIds(ids: number[]): Promise<any>;
 
-    findIfNotInIds(ids: string[]): Promise<any>;
+    findIfNotInIds(ids: number[]): Promise<any>;
 
-    findIfInIds(ids: string[]): Promise<any>;
+    findIfInIds(ids: number[]): Promise<any>;
 
-    checkIfExistAccessName(name: string, id?: string): Promise<any>;
+    checkIfExistAccessName(name: string, id?: number): Promise<any>;
 
-    isSystem(id: string): Promise<any>;
+    isSystem(id: number): Promise<any>;
 }
 
 @Service()
 export class AccessoRepository implements IAccessoRepository {
-    public getAllAccess = (): Promise<Array<any>> =>
-        AccessModel.where({ deleted: false });
+    private repository: Repository<Access>;
+    private crudRepository: ICrudRepository<Access, number>;
 
-    public addAccess = (contract: AccessDTO): Promise<any> =>
-        AccessModel.create({ ...contract, deleted: false });
-
-    public updateAccess = (contract: AccessDTO): Promise<any> =>
-        AccessModel.findByIdAndUpdate(contract.id, contract);
-
-    public deleteAccess = (id: string): Promise<any> =>
-        AccessModel.findByIdAndUpdate(id, { deleted: true });
-
-    public findById(id: string): Promise<any> {
-        return AccessModel.findById(id).where({ deleted: false });
+    constructor() {
+        this.repository = getRepository(Access);
+        this.crudRepository = new CrudRepository(Access);
     }
 
-    public deleteByIds(ids: string[]): Promise<any> {
-        const promises = ids.map((item) => this.deleteAccess(item));
-        return Promise.all(promises);
+    public getAllAccess = async (): Promise<Array<any>> =>
+        this.crudRepository.findAll();
+
+    public async addAccess(contract: AccessDTO): Promise<any> {
+        let metadata = new Access();
+        metadata.name = contract.name;
+        metadata.route = contract.route;
+        metadata.description = contract.description;
+        metadata.active = contract.active;
+        metadata.deleted = false;
+        metadata.isSystem = contract.isSystem;
+        metadata.id = await this.crudRepository.save(metadata);
+        return metadata;
     }
 
-    public findIfNotInIds = (ids: string[]): Promise<any> =>
-        AccessModel.where({ _id: { $nin: ids }, deleted: false });
+    public updateAccess(contract: AccessDTO): Promise<any> {
+        let metadata = new Access();
+        metadata.id = contract.id;
+        metadata.name = contract.name;
+        metadata.route = contract.route;
+        metadata.description = contract.description;
+        metadata.active = contract.active;
+        metadata.isSystem = contract.isSystem;
+        return this.repository.save(metadata);
+    }
 
-    public findIfInIds = (ids: string[]): Promise<any> =>
-        AccessModel.where({ _id: { $in: ids }, deleted: false });
+    public async deleteAccess(id: number): Promise<any> {
+        const access = await this.repository.findOne(id);
+        if (!access) return;
+        access.deleted = true;
+        return this.crudRepository.save(access);
+    }
 
-    public checkIfExistAccessName(name: string, id?: string): Promise<any> {
+    public findById = (id: number): Promise<any> =>
+        this.crudRepository.findOne(id);
+
+    public deleteByIds = (ids: number[]): Promise<any> =>
+        this.crudRepository.delete(ids);
+
+    public findIfNotInIds = (ids: number[]): Promise<any> =>
+        this.repository
+            .createQueryBuilder()
+            .where('id not in :ids', { ids })
+            .andWhere('deleted = false')
+            .getMany();
+
+    public findIfInIds = (ids: number[]): Promise<any> =>
+        this.repository
+            .createQueryBuilder()
+            .whereInIds(ids)
+            .andWhere('deleted = false')
+            .getMany();
+
+    public checkIfExistAccessName(name: string, id?: number): Promise<any> {
         if (!id) {
-            return AccessModel.findOne().where({ deleted: false, name: name });
+            return this.repository
+                .createQueryBuilder()
+                .where('name = :accessName', { accessName: name })
+                .andWhere('deleted = false')
+                .getOne();
         }
-        return AccessModel.findOne().where({
-            deleted: false,
-            name: name,
-            _id: { $ne: id }
-        });
+        return this.repository
+            .createQueryBuilder()
+            .where(`name = :accessName`, { accessName: name })
+            .andWhere('deleted = false')
+            .andWhere(`id != ${id}`)
+            .getOne();
     }
 
-    public isSystem = (id: string): Promise<any> =>
-        AccessModel.findOne().where({ _id: id, isSystem: true });
+    public isSystem = (id: number): Promise<any> =>
+        this.repository
+            .createQueryBuilder()
+            .where('id = :idAccess', { idAccess: id })
+            .andWhere('is_system = true')
+            .getOne();
 }
