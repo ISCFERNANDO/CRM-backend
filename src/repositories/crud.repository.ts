@@ -1,7 +1,7 @@
-import { EntityTarget, getRepository, Repository } from 'typeorm';
+import { EntityTarget, getRepository, InsertResult, Repository } from 'typeorm';
 
 export interface ICrudRepository<T, ID> {
-    save(t: T): Promise<T>;
+    save(t: T): Promise<ID>;
     findOne(id: ID): Promise<T | undefined>;
     exists(id: ID): Promise<boolean>;
     findAll(id?: Array<ID>): Promise<Array<T>>;
@@ -16,7 +16,10 @@ export class CrudRepository<T, ID> implements ICrudRepository<T, ID> {
         this.repository = getRepository<T>(entity);
     }
 
-    save = (t: T): Promise<T> => this.repository.save(t);
+    save = async (t: T): Promise<ID> => {
+        const result: InsertResult = await this.repository.insert(t);
+        return result.raw.insertId;
+    };
 
     findOne = (id: ID): Promise<T | undefined> => this.repository.findOne(id);
 
