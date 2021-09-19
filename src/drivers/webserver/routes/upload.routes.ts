@@ -2,11 +2,15 @@ import { Router } from 'express';
 import { Container } from 'typedi';
 import { FileUploadController } from '../../../controllers/file-upload.controller';
 
-const controller = Container.get(FileUploadController);
-const fileUploadRoute = Router();
+const initializeFileUploadRoutes = (): Router => {
+    const controller = Container.get(FileUploadController);
 
-fileUploadRoute
-    .route('/v1/uploads')
-    .post((req, res, next) => controller.uploadFile(req, res, next));
+    const routes = Router();
 
-export default fileUploadRoute;
+    routes
+        .route('/v1/uploads')
+        .post((req, res, next) => controller.uploadFile(req, res, next));
+    return routes;
+};
+
+export { initializeFileUploadRoutes };

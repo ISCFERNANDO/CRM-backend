@@ -6,7 +6,7 @@ import { Server } from 'http';
 import { join } from 'path';
 import { errorHandler } from '../../middlewares/error.middleware';
 import { notFoundHandler } from '../../middlewares/not-found.middleware';
-import routes from './routes';
+import { initializeRoutes } from './routes';
 import compression = require('compression');
 import cors = require('cors');
 import morgan = require('morgan');
@@ -32,7 +32,7 @@ export class App {
             '/images',
             express.static(join(__dirname, '../..', 'public/images'))
         );
-        this._app.use('/crm-api', routes);
+        this._app.use('/crm-api', initializeRoutes());
         this._app.use(errorHandler);
         this._app.use(notFoundHandler);
         this._port = process.env.PORT ? parseInt(process.env.PORT) : 3001;

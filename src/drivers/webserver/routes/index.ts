@@ -1,23 +1,27 @@
 import { Router } from 'express';
-import { authValidatorMiddleware } from '../../../middlewares/auth-validator.middleware';
-import accesoRoutes from './acceso.routes';
-import addressRoutes from './address.routes';
-import authRoutes from './auth.routes';
-import customerRoutes from './customer.routes';
-import rollRoutes from './roll.routes';
-import uploadRoutes from './upload.routes';
-import userRoutes from './user.routes';
+import { initializeAccessRoutes } from './acceso.routes';
+import { initializeAddressRouter } from './address.routes';
+import { initializeAuthRoutes } from './auth.routes';
+import { initializeCustomerRoutes } from './customer.routes';
+import { initializeRollRoutes } from './roll.routes';
+import { initializeFileUploadRoutes } from './upload.routes';
+import { initializeUserRoutes } from './user.routes';
 
-const routes = Router();
-routes.use(
-    authRoutes,
-    authValidatorMiddleware,
-    accesoRoutes,
-    rollRoutes,
-    userRoutes,
-    uploadRoutes,
-    customerRoutes,
-    addressRoutes
-);
+const initializeRoutes = (): Router => {
+    const routes = Router();
 
-export default routes;
+    routes.use(
+        initializeAuthRoutes(),
+        //authValidatorMiddleware,
+        initializeAccessRoutes(),
+        initializeAddressRouter(),
+        initializeCustomerRoutes(),
+        initializeRollRoutes(),
+        initializeFileUploadRoutes(),
+        initializeUserRoutes()
+    );
+
+    return routes;
+};
+
+export { initializeRoutes };
