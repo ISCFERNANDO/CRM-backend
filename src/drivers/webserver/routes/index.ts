@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authValidatorMiddleware } from './../../../middlewares/auth-validator.middleware';
 import { initializeAccessRoutes } from './acceso.routes';
 import { initializeAddressRouter } from './address.routes';
 import { initializeAuthRoutes } from './auth.routes';
@@ -12,7 +13,7 @@ const initializeRoutes = (): Router => {
 
     routes.use(
         initializeAuthRoutes(),
-        //authValidatorMiddleware,
+        authValidatorMiddleware,
         initializeAccessRoutes(),
         initializeAddressRouter(),
         initializeCustomerRoutes(),
