@@ -82,3 +82,102 @@ const users = [
 users.forEach((item) =>
     db.user.update({ email: item.email }, item, { upsert: true })
 );
+
+/**Initialize catalogs */
+const currency = [
+    {
+        _id: ObjectId(),
+        name: 'MXN',
+        description: 'Pesos mexicanos',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        name: 'USD',
+        description: 'Dólares',
+        active: true,
+        deleted: false,
+        isSystem: true
+    }
+];
+currency.forEach((item) =>
+    db.currency.update({ name: item.name }, item, { upsert: true })
+);
+
+const plazos = [];
+for (let index = 1; index < 11; index++) {
+    plazos.push({
+        _id: ObjectId(),
+        name: `${index} me${index > 1 ? 's' : ''}`,
+        active: true,
+        deleted: false,
+        isSystem: true
+    });
+}
+plazos.push({
+    _id: ObjectId(),
+    name: '1 año',
+    active: true,
+    deleted: false,
+    isSystem: true
+});
+plazos.push({
+    _id: ObjectId(),
+    name: '1 año y medio',
+    active: true,
+    deleted: false,
+    isSystem: true
+});
+plazos.push({
+    _id: ObjectId(),
+    name: '2 años',
+    active: true,
+    deleted: false,
+    isSystem: true
+});
+plazos.forEach((item) =>
+    db.plazo.update({ name: item.name }, item, { upsert: true })
+);
+
+const paymentMethods = [
+    {
+        _id: ObjectId(),
+        name: 'Diario',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        name: 'Semanal',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        name: 'Quincenal',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        name: 'Mensual',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        name: 'Una sola exhibición',
+        active: true,
+        deleted: false,
+        isSystem: true
+    }
+];
+paymentMethods.forEach((item) =>
+    db.paymentMethod.update({ name: item.name }, item, { upsert: true })
+);
