@@ -46,7 +46,7 @@ const accesos = [
     }
 ];
 accesos.forEach((item) =>
-    db.access.update({ _id: item._id }, item, { upsert: true })
+    db.access.update({ name: item.name }, item, { upsert: true })
 );
 
 const rolls = [
@@ -57,11 +57,11 @@ const rolls = [
         active: true,
         deleted: false,
         isSystem: true,
-        accesess: accesos.map((item) => ({ _id: item._id }))
+        accesess: accesos.map((item) => item._id)
     }
 ];
 rolls.forEach((item) =>
-    db.rol.update({ _id: item._id }, item, { upsert: true })
+    db.rol.update({ name: item.name }, item, { upsert: true })
 );
 
 const users = [
@@ -80,5 +80,5 @@ const users = [
     }
 ];
 users.forEach((item) =>
-    db.user.update({ _id: item._id }, item, { upsert: true })
+    db.user.update({ email: item.email }, item, { upsert: true })
 );
