@@ -2,8 +2,8 @@ import { AddressDTO } from '@/dto/address.dto';
 import { Service } from 'typedi';
 import HttpException from '../common/http.exception';
 import { HttpStatus } from '../constants/http-status';
-import { Messages } from './../constants/messages';
-import { MultiServiciosAddressRepository } from './../repositories/address.repository';
+import { Messages } from '../constants/messages';
+import { MultiServiciosAddressRepository } from '../repositories/address.repository';
 
 export interface IAddressService {
     getAddressByCp(cp: string): Promise<AddressDTO | void>;
