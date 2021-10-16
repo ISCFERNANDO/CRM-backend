@@ -3,6 +3,7 @@ import { authValidatorMiddleware } from './../../../middlewares/auth-validator.m
 import { initializeAccessRoutes } from './acceso.routes';
 import { initializeAddressRouter } from './address.routes';
 import { initializeAuthRoutes } from './auth.routes';
+import { initializeCatalogRoutes } from './catalog.routes';
 import { initializeCustomerRoutes } from './customer.routes';
 import { initializeRollRoutes } from './roll.routes';
 import { initializeFileUploadRoutes } from './upload.routes';
@@ -19,7 +20,8 @@ const initializeRoutes = (): Router => {
         initializeCustomerRoutes(),
         initializeRollRoutes(),
         initializeFileUploadRoutes(),
-        initializeUserRoutes()
+        initializeUserRoutes(),
+        initializeCatalogRoutes()
     );
 
     return routes;

@@ -107,10 +107,10 @@ currency.forEach((item) =>
 );
 
 const plazos = [];
-for (let index = 1; index < 11; index++) {
+for (let index = 1; index <= 11; index++) {
     plazos.push({
         _id: ObjectId(),
-        name: `${index} me${index > 1 ? 's' : ''}`,
+        name: `${index} me${index > 1 ? 'ses' : 's'}`,
         active: true,
         deleted: false,
         isSystem: true
