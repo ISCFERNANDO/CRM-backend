@@ -5,6 +5,7 @@ import { initializeAddressRouter } from './address.routes';
 import { initializeAuthRoutes } from './auth.routes';
 import { initializeCatalogRoutes } from './catalog.routes';
 import { initializeCustomerRoutes } from './customer.routes';
+import { initializeInterestRoutes } from './interest.routes';
 import { initializeRollRoutes } from './roll.routes';
 import { initializeFileUploadRoutes } from './upload.routes';
 import { initializeUserRoutes } from './user.routes';
@@ -21,7 +22,8 @@ const initializeRoutes = (): Router => {
         initializeRollRoutes(),
         initializeFileUploadRoutes(),
         initializeUserRoutes(),
-        initializeCatalogRoutes()
+        initializeCatalogRoutes(),
+        initializeInterestRoutes()
     );
 
     return routes;

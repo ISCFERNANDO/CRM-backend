@@ -150,7 +150,7 @@ export class UserService implements IUserService {
                     item.accesess.map((a: AccessDTO) => a.id)
                 );
                 data.accesess.push(...accesses);
-            } else {
+            } else if (item.rol) {
                 data.rol = this.mapRol(item.rol);
                 const accesses: AccessDTO[] = await this.getListAccesosQuePertenecenRol(
                     item.rol.accesess

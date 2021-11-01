@@ -111,6 +111,7 @@ for (let index = 1; index <= 11; index++) {
     plazos.push({
         _id: ObjectId(),
         name: `${index} me${index > 1 ? 'ses' : 's'}`,
+        value: index,
         active: true,
         deleted: false,
         isSystem: true
@@ -119,6 +120,7 @@ for (let index = 1; index <= 11; index++) {
 plazos.push({
     _id: ObjectId(),
     name: '1 año',
+    value: 12,
     active: true,
     deleted: false,
     isSystem: true
@@ -126,6 +128,7 @@ plazos.push({
 plazos.push({
     _id: ObjectId(),
     name: '1 año y medio',
+    value: 18,
     active: true,
     deleted: false,
     isSystem: true
@@ -133,6 +136,7 @@ plazos.push({
 plazos.push({
     _id: ObjectId(),
     name: '2 años',
+    value: 24,
     active: true,
     deleted: false,
     isSystem: true
@@ -180,4 +184,67 @@ const paymentMethods = [
 ];
 paymentMethods.forEach((item) =>
     db.paymentMethod.update({ name: item.name }, item, { upsert: true })
+);
+
+const paymentMethodInterest = [
+    {
+        _id: ObjectId(),
+        paymentMethod: paymentMethods.find((item) => item.name === 'Diario')
+            ._id,
+        name: 'Porcentaje de interés y moratorio para pago diaro',
+        monthlyInterest: 20,
+        moratorioInterest: 5,
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        paymentMethod: paymentMethods.find((item) => item.name === 'Semanal')
+            ._id,
+        name: 'Porcentaje de interés y moratorio para pago semanal',
+        monthlyInterest: 20,
+        moratorioInterest: 5,
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        paymentMethod: paymentMethods.find((item) => item.name === 'Quincenal')
+            ._id,
+        name: 'Porcentaje de interés y moratorio para pago quincenal',
+        monthlyInterest: 20,
+        moratorioInterest: 5,
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        paymentMethod: paymentMethods.find((item) => item.name === 'Mensual')
+            ._id,
+        name: 'Porcentaje de interés y moratorio para pago mensual',
+        monthlyInterest: 20,
+        moratorioInterest: 5,
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId(),
+        paymentMethod: paymentMethods.find(
+            (item) => item.name === 'Una sola exhibición'
+        )._id,
+        name:
+            'Porcentaje de interés y moratorio para pago de una sola exhibición',
+        monthlyInterest: 20,
+        moratorioInterest: 5,
+        active: true,
+        deleted: false,
+        isSystem: true
+    }
+];
+paymentMethodInterest.forEach((item) =>
+    db.paymentMethodInterest.update({ name: item.name }, item, { upsert: true })
 );
