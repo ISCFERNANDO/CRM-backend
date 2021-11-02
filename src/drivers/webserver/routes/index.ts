@@ -6,6 +6,7 @@ import { initializeAuthRoutes } from './auth.routes';
 import { initializeCatalogRoutes } from './catalog.routes';
 import { initializeCustomerRoutes } from './customer.routes';
 import { initializeInterestRoutes } from './interest.routes';
+import { initializePrestamoRoutes } from './prestamo.routes';
 import { initializeRollRoutes } from './roll.routes';
 import { initializeFileUploadRoutes } from './upload.routes';
 import { initializeUserRoutes } from './user.routes';
@@ -23,7 +24,8 @@ const initializeRoutes = (): Router => {
         initializeFileUploadRoutes(),
         initializeUserRoutes(),
         initializeCatalogRoutes(),
-        initializeInterestRoutes()
+        initializeInterestRoutes(),
+        initializePrestamoRoutes()
     );
 
     return routes;

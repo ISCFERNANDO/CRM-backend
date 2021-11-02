@@ -1,3 +1,4 @@
+import { LoginResponse } from '@/dto/login.dto';
 import { Service } from 'typedi';
 import HttpException from '../common/http.exception';
 import { HttpStatus } from '../constants/http-status';
@@ -141,6 +142,43 @@ export class UserService implements IUserService {
             accesess: [],
             active: item.active,
             password: item.password,
+            imageUrl: item.imageUrl
+        };
+        if (isDetail) {
+            if (item.customRol) {
+                data.accesess = [];
+                const accesses: AccessDTO[] = await this.getListAccesosQuePertenecenRol(
+                    item.accesess.map((a: AccessDTO) => a.id)
+                );
+                data.accesess.push(...accesses);
+            } else if (item.rol) {
+                data.rol = this.mapRol(item.rol);
+                const accesses: AccessDTO[] = await this.getListAccesosQuePertenecenRol(
+                    item.rol.accesess
+                );
+                data.rol.accesess = accesses;
+            }
+        }
+
+        return data;
+    }
+
+    async mapUserLogin(
+        item: any,
+        isDetail: boolean = false
+    ): Promise<LoginResponse> {
+        console.log('item => ', item);
+        const data: LoginResponse = {
+            id: item._id,
+            name: item.name,
+            firstSurname: item.firstSurname,
+            secondSurname: item.secondSurname,
+            email: item.email,
+            phoneNumber: item.phoneNumber,
+            photoUrl: item.photoUrl,
+            customRol: item.customRol,
+            rol: null,
+            accesess: [],
             imageUrl: item.imageUrl
         };
         if (isDetail) {

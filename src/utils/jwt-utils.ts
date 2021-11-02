@@ -1,13 +1,22 @@
+import { LoginResponse } from '@/dto/login.dto';
 import { sign, verify } from 'jsonwebtoken';
 import HttpException from '../common/http.exception';
 import { HttpStatus } from '../constants/http-status';
-import { UserDTO } from './../dto/user.dto';
 const secret = process.env.JWT_SECRET ?? '';
 
-function createToken(user: UserDTO): string {
-    return sign(user, secret, {
-        expiresIn: '12h'
-    });
+function createToken(user: LoginResponse): string {
+    return sign(
+        {
+            id: user.id,
+            name: user.name,
+            firstSurname: user.firstSurname,
+            secondSurname: user.secondSurname
+        },
+        secret,
+        {
+            expiresIn: '12h'
+        }
+    );
 }
 
 function validateAndDecodeToken(token: string): any {

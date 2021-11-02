@@ -42,5 +42,7 @@ export enum Messages {
     CUSTOMER_EXIST = 'Ya existe un acceso con el mismo nombre',
     INTERNAL_SERVER_ERROR = 'Error interno del servidor',
 
-    CP_NOT_FOUND = 'No se encontró el código postal'
+    CP_NOT_FOUND = 'No se encontró el código postal',
+
+    ADD_PRESTAMO_OK = 'El prestamo se otorgó exitosamente'
 }

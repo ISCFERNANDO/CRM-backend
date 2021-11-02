@@ -25,7 +25,7 @@ export class AuthService {
                 Messages.EMAIL_OR_PASSWORD_NOT_FOUND
             );
         }
-        const userData: LoginResponse = await this.userService.mapUser(
+        const userData: LoginResponse = await this.userService.mapUserLogin(
             data,
             true
         );
