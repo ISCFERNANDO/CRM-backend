@@ -11,11 +11,6 @@ export class CatalogService {
         return listOfTypeCurrency.map(this.mapCatalog);
     }
 
-    async getAllPlazosPago(): Promise<CatalogDTO[]> {
-        const listOfPlazoPago = await this.catalogRepository.getAllPlazosPago();
-        return listOfPlazoPago.map(this.mapCatalog);
-    }
-
     private mapCatalog(data: any): CatalogDTO {
         return {
             id: data.id,

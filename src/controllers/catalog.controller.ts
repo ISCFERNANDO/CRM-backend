@@ -3,13 +3,15 @@ import { Service } from 'typedi';
 import responseHandler from '../common/response-handler';
 import { Messages } from '../constants/messages';
 import { CatalogService } from '../services/catalog.service';
+import { FormaPagoService } from '../services/forma-pago.service';
 import { PlazoService } from '../services/plazo.service';
 
 @Service()
 export class CatalogController {
     constructor(
         private catalogService: CatalogService,
-        private plazoService: PlazoService
+        private plazoService: PlazoService,
+        private formaPagoService: FormaPagoService
     ) {}
 
     async getAllCurrency(
@@ -44,7 +46,7 @@ export class CatalogController {
         next: NextFunction
     ): Promise<void> {
         try {
-            const listOfPlazos = await this.catalogService.getAllPlazosPago();
+            const listOfPlazos = await this.formaPagoService.getAllFormasPago();
             responseHandler(res, Messages.OPERATION_OK, listOfPlazos);
         } catch (error) {
             next(error);
