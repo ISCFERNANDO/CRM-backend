@@ -6,6 +6,8 @@ export interface PrestamoItemDTO {
     contratanteCredito: ContratanteCreditoDTO;
     datosCredito: DatosCreditoDTO;
     direccionContratacion?: DireccionDTO;
+    diasRestantesParaVencimiento: number;
+    diasVencidos: number;
     active: boolean;
 }
 

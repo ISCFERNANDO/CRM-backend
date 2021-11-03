@@ -1,3 +1,4 @@
+import { differenceInDays } from 'date-fns';
 import { Service } from 'typedi';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
@@ -24,7 +25,10 @@ export class PrestamoService implements IPrestamoService {
     }
 
     private mapPrestamo(prestamo: any): PrestamoItemDTO {
-        console.log(prestamo);
+        const differenceDays = differenceInDays(
+            new Date(prestamo.datosCredito.fechaVencimiento),
+            new Date(prestamo.datosCredito.fechaExpedicion)
+        );
         return {
             id: prestamo._id,
             autorizadorCreditoId: prestamo.autorizadorCredito,
@@ -45,6 +49,9 @@ export class PrestamoService implements IPrestamoService {
                 moneda: prestamo.datosCredito.moneda.name,
                 liquidated: prestamo.datosCredito.liquidated
             },
+            diasRestantesParaVencimiento:
+                differenceDays >= 0 ? differenceDays : 0,
+            diasVencidos: differenceDays < 0 ? Math.abs(differenceDays) : 0,
             active: prestamo.active
         };
 
