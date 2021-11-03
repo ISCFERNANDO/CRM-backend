@@ -23,4 +23,17 @@ export class PrestamoController {
             next(error);
         }
     }
+
+    public async findAllPrestamos(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const data = await this.prestamoService.findAllPrestamos();
+            responseHandler(res, Messages.GET_PRESTAMOS_OK, data);
+        } catch (error) {
+            next(error);
+        }
+    }
 }

@@ -27,7 +27,9 @@ const prestamoModel = new mongoose.Schema(
             },
             porcentajeInteresMensual: Number,
             porcentajeInteresMoratorio: Number,
-            totalPagar: Number
+            totalPagar: Number,
+            fechaVencimiento: String,
+            liquidated: Boolean
         },
         direccionContratacion: {
             codigoPostal: String,

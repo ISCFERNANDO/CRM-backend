@@ -1,9 +1,9 @@
 import { DireccionDTO } from './customer.dto';
 
-export interface PrestamoDTO {
+export interface PrestamoItemDTO {
     id: string;
     autorizadorCreditoId: string;
-    contratanteCreditoId: string;
+    contratanteCredito: ContratanteCreditoDTO;
     datosCredito: DatosCreditoDTO;
     direccionContratacion?: DireccionDTO;
     active: boolean;
@@ -12,12 +12,16 @@ export interface PrestamoDTO {
 export interface DatosCreditoDTO {
     fechaExpedicion: string;
     moneda: string;
-    montoPrestamo?: number;
-    formaPago?: string;
-    plazoCredito?: string;
-    porcentajeInteresMensual?: number;
-    porcentajeInteresMoratorio?: number;
     totalPagar: number;
     fechaVencimiento: string;
     liquidated: boolean;
+}
+
+export interface ContratanteCreditoDTO {
+    id: string;
+    name: string;
+    firstSurname: string;
+    secondSurname?: string;
+    email?: string;
+    telefono?: string;
 }

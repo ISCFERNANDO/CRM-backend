@@ -9,6 +9,7 @@ const initializePrestamoRoutes = (): Router => {
     const routes = Router();
     routes
         .route('/v1/prestamos')
+        .get((req, res, next) => controller.findAllPrestamos(req, res, next))
         .post(createPrestamoValidator, (req, res, next) =>
             controller.addPrestamo(req, res, next)
         );
