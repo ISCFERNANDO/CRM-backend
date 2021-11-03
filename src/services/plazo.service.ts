@@ -11,6 +11,13 @@ export class PlazoService {
         return listOfPlazos.map(this.mapPlazo);
     }
 
+    async findPlazoById(plazoCreditoId: string): Promise<PlazoDTO> {
+        const plazoCredito = await this.plazoRepository.findPlazoById(
+            plazoCreditoId
+        );
+        return this.mapPlazo(plazoCredito);
+    }
+
     private mapPlazo(data: any): PlazoDTO {
         return {
             id: data.id,
