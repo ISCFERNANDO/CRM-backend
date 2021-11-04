@@ -1,29 +1,37 @@
 import { addDays, compareAsc, differenceInDays, format } from 'date-fns';
-import {
-    CalculoPagoInput,
-    CalculoPagoOutput,
-    ICalculoPago
-} from './calculo-pago';
+import { CalculoPagoOutput, ICalculoPago } from './calculo-pago';
 
-export class CalculoPagoDiario implements ICalculoPago {
-    public calculate(
+export class CalculoPagoDiario extends ICalculoPago {
+    constructor() {
+        super(0);
+    }
+
+    protected calculateNumberPayments = (): number =>
+        differenceInDays(this.fechaExpiracion, this.fechaExpedicion);
+
+    protected calculateAmountPerPay = (
         totalAPagar: number,
-        input: CalculoPagoInput
-    ): Array<CalculoPagoOutput> {
-        const fechaExpiracion = new Date(input.fechaExpiracion);
-        let cursorDate = new Date(input.fechaExpedicion);
+        numberPayments: number
+    ): number => Math.trunc(totalAPagar / Math.abs(numberPayments));
 
-        const numDias: number = differenceInDays(fechaExpiracion, cursorDate);
-        const dailyPay = totalAPagar / Math.abs(numDias);
+    public calculatePayments(
+        totalAPagar: number,
+        numberPayments: number,
+        amountPerPay: number
+    ): Array<CalculoPagoOutput> {
         const pagos: Array<CalculoPagoOutput> = [];
-        cursorDate = addDays(cursorDate, 1);
-        while (compareAsc(cursorDate, fechaExpiracion) <= 0) {
+        this.fechaExpedicion = addDays(this.fechaExpedicion, 1);
+        while (compareAsc(this.fechaExpedicion, this.fechaExpiracion) <= 0) {
             pagos.push({
-                fechaPago: format(cursorDate, 'MM/dd/yyyy'),
-                montoPago: dailyPay
+                fechaPago: format(this.fechaExpedicion, 'MM/dd/yyyy'),
+                montoPago: amountPerPay
             });
-            cursorDate = addDays(cursorDate, 1);
+            this.fechaExpedicion = addDays(this.fechaExpedicion, 1);
         }
+
+        const numPagos = pagos.length;
+        pagos[numPagos - 1].montoPago =
+            totalAPagar - (numPagos - 1) * amountPerPay;
         return pagos;
     }
 }

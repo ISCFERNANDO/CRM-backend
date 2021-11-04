@@ -4,7 +4,11 @@ import {
     ICalculoPago
 } from './calculo-pago';
 
-export class CalculoPagoUnaExhibicion implements ICalculoPago {
+export class CalculoPagoUnaExhibicion extends ICalculoPago {
+    constructor() {
+        super(0);
+    }
+
     public calculate(
         totalAPagar: number,
         input: CalculoPagoInput
