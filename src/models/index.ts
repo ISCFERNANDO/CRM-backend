@@ -1,6 +1,7 @@
 import AccessModel from './access.model';
 import CurrencyModel from './currency.model';
 import CustomerModel from './customer.model';
+import PagoPrestamoModel from './pago-prestamo.model';
 import ParametroConfiguracionModel from './parametro-configuracion.model';
 import PaymentMethodInterestModel from './payment-method-interest';
 import PaymentMethodModel from './payment-method.model';
@@ -19,5 +20,6 @@ export {
     PaymentMethodModel,
     PaymentMethodInterestModel,
     PrestamoModel,
-    ParametroConfiguracionModel
+    ParametroConfiguracionModel,
+    PagoPrestamoModel
 };

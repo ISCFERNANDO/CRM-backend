@@ -2,7 +2,10 @@ import { differenceInDays } from 'date-fns';
 import { Service } from 'typedi';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
+import { PagoPrestamoRepository } from './../repositories/pago-prestamo.model';
 import { PrestamoRepository } from './../repositories/prestamo.repository';
+import { CalculoPagoOutput } from './calculo-pagos-credito/calculo-pago';
+import { CalculoPagosPrestamoService } from './calculo-pagos-credito/calculo-pagos-credito.service';
 
 export interface IPrestamoService {
     addPrestamo(contract: PrestamoDTO): Promise<PrestamoDTO | void>;
@@ -11,23 +14,44 @@ export interface IPrestamoService {
 
 @Service()
 export class PrestamoService implements IPrestamoService {
-    constructor(private prestamoRepository: PrestamoRepository) {}
+    constructor(
+        private prestamoRepository: PrestamoRepository,
+        private calculoPagosService: CalculoPagosPrestamoService,
+        private pagoPrestamoRepository: PagoPrestamoRepository
+    ) {}
 
     async addPrestamo(contract: PrestamoDTO): Promise<void | PrestamoDTO> {
         const data = await this.prestamoRepository.addPrestamo(contract);
         contract.id = data._id;
+        const pagos: Array<CalculoPagoOutput> = await this.calculoPagosService.calcularPagos(
+            {
+                fechaExpedicion: contract.datosCredito.fechaExpedicion,
+                fechaExpiracion: contract.datosCredito.fechaVencimiento,
+                formaPagoId: contract.datosCredito.formaPago,
+                montoPrestamo: contract.datosCredito.montoPrestamo,
+                plazoCreditoId: contract.datosCredito.plazoCredito,
+                porcentajeInteresMensual:
+                    contract.datosCredito.porcentajeInteresMensual
+            }
+        );
+        await this.pagoPrestamoRepository.addAllPagoPrestamo(
+            pagos,
+            contract.id
+        );
+        contract.pagos = pagos;
         return contract;
     }
 
     async findAllPrestamos(): Promise<Array<PrestamoItemDTO>> {
         const prestamos = await this.prestamoRepository.findAllPrestamos();
-        return prestamos.map(this.mapPrestamo);
+        const currentDate = new Date();
+        return prestamos.map((item) => this.mapPrestamo(item, currentDate));
     }
 
-    private mapPrestamo(prestamo: any): PrestamoItemDTO {
+    private mapPrestamo(prestamo: any, currentDate: any): PrestamoItemDTO {
         const differenceDays = differenceInDays(
             new Date(prestamo.datosCredito.fechaVencimiento),
-            new Date(prestamo.datosCredito.fechaExpedicion)
+            currentDate
         );
         return {
             id: prestamo._id,

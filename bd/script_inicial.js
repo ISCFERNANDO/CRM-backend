@@ -149,6 +149,7 @@ const paymentMethods = [
     {
         _id: ObjectId(),
         name: 'Diario',
+        value: 1,
         active: true,
         deleted: false,
         isSystem: true
@@ -156,6 +157,7 @@ const paymentMethods = [
     {
         _id: ObjectId(),
         name: 'Semanal',
+        value: 2,
         active: true,
         deleted: false,
         isSystem: true
@@ -163,6 +165,7 @@ const paymentMethods = [
     {
         _id: ObjectId(),
         name: 'Quincenal',
+        value: 3,
         active: true,
         deleted: false,
         isSystem: true
@@ -170,6 +173,7 @@ const paymentMethods = [
     {
         _id: ObjectId(),
         name: 'Mensual',
+        value: 4,
         active: true,
         deleted: false,
         isSystem: true
@@ -177,6 +181,7 @@ const paymentMethods = [
     {
         _id: ObjectId(),
         name: 'Una sola exhibición',
+        value: 5,
         active: true,
         deleted: false,
         isSystem: true
