@@ -24,6 +24,20 @@ export class PrestamoController {
         }
     }
 
+    public async confirmPrestamo(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const { id } = req.params;
+            await this.prestamoService.confirmPrestamo(id);
+            responseHandler(res, Messages.CONFIRM_PRESTAMO_OK, null);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public async findAllPrestamos(
         req: Request,
         res: Response,

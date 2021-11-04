@@ -14,6 +14,10 @@ const initializePrestamoRoutes = (): Router => {
             controller.addPrestamo(req, res, next)
         );
 
+    routes
+        .route('/v1/prestamos/:id/confirmacion')
+        .post((req, res, next) => controller.confirmPrestamo(req, res, next));
+
     return routes;
 };
 

@@ -253,3 +253,51 @@ const paymentMethodInterest = [
 paymentMethodInterest.forEach((item) =>
     db.paymentMethodInterest.update({ name: item.name }, item, { upsert: true })
 );
+
+db.statusPrestamo.insertMany([
+    {
+        _id: ObjectId('61834301ecd9add757420b58'),
+        key: 'PENDIENTE_CONFIRMACION',
+        name: 'Pendiente por confirmar',
+        description: 'Solicitud en espera por confirmación del cliente',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('61834301ecd9add757420b59'),
+        key: 'CONFIRMADA',
+        name: 'Confirmada',
+        description: 'Solicitud confirmado por el cliente',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('61834301ecd9add757420b5a'),
+        key: 'CANCELADA',
+        name: 'Cancelada',
+        description: 'Solicitud cancelado por el cliente',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('61834301ecd9add757420b5b'),
+        key: 'RECHAZADA',
+        name: 'Rechazada',
+        description: 'Solicitud rechazada por la entidad financiera',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('61834301ecd9add757420b5c'),
+        key: 'LIQUIDADO',
+        name: 'Liquidado',
+        description: 'Crédito liquidado',
+        active: true,
+        deleted: false,
+        isSystem: true
+    }
+]);

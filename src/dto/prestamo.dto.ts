@@ -7,6 +7,7 @@ export interface PrestamoDTO {
     contratanteCreditoId: string;
     datosCredito: DatosCreditoDTO;
     direccionContratacion?: DireccionDTO;
+    statusPrestamo?: string;
     pagos: Array<CalculoPagoOutput>;
     active: boolean;
 }

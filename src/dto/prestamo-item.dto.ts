@@ -8,6 +8,7 @@ export interface PrestamoItemDTO {
     direccionContratacion?: DireccionDTO;
     diasRestantesParaVencimiento: number;
     diasVencidos: number;
+    statusCredito: string;
     active: boolean;
 }
 

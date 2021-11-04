@@ -8,6 +8,7 @@ import PaymentMethodModel from './payment-method.model';
 import PlazoModel from './plazo.model';
 import PrestamoModel from './prestamo.model';
 import RolModel from './rol.model';
+import StatusPrestamoModel from './status-prestamo.model';
 import UserModel from './user.model';
 
 export {
@@ -21,5 +22,6 @@ export {
     PaymentMethodInterestModel,
     PrestamoModel,
     ParametroConfiguracionModel,
-    PagoPrestamoModel
+    PagoPrestamoModel,
+    StatusPrestamoModel
 };

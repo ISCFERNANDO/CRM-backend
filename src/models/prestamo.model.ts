@@ -40,6 +40,10 @@ const prestamoModel = new mongoose.Schema(
             numeroExterior: String,
             numeroInterior: String
         },
+        statusPrestamo: {
+            type: mongoose.Types.ObjectId,
+            ref: 'statusPrestamo'
+        },
         deleted: Boolean,
         active: Boolean
     },

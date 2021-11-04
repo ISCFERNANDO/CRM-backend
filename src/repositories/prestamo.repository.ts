@@ -5,7 +5,7 @@ import { PrestamoDTO } from './../dto/prestamo.dto';
 
 export interface IPrestamoRepository {
     addPrestamo(contract: PrestamoDTO): Promise<any>;
-
+    updatePrestamo(id: string, contract: any): Promise<any>;
     findAllPrestamos(): Promise<Array<any>>;
 }
 
@@ -16,10 +16,14 @@ export class PrestamoRepository implements IPrestamoRepository {
         return PrestamoModel.create(this.prestamoDtoToModel(contract));
     };
 
+    public updatePrestamo = (id: string, contract: any): Promise<any> =>
+        PrestamoModel.findByIdAndUpdate(id, { ...contract });
+
     public findAllPrestamos = (): Promise<Array<any>> =>
         PrestamoModel.where({ deleted: false })
             .populate('contratanteCredito')
-            .populate('datosCredito.moneda');
+            .populate('datosCredito.moneda')
+            .populate('statusPrestamo');
 
     private prestamoDtoToModel(contract: PrestamoDTO): any {
         return {
@@ -40,6 +44,7 @@ export class PrestamoRepository implements IPrestamoRepository {
                 liquidated: contract.datosCredito.liquidated
             },
             direccion: contract.direccionContratacion,
+            statusPrestamo: contract.statusPrestamo,
             deleted: false,
             active: true
         };

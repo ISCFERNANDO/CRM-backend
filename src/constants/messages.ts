@@ -45,5 +45,6 @@ export enum Messages {
     CP_NOT_FOUND = 'No se encontró el código postal',
 
     ADD_PRESTAMO_OK = 'El prestamo se otorgó exitosamente',
-    GET_PRESTAMOS_OK = 'Los préstamos se cargaron exitosamente'
+    GET_PRESTAMOS_OK = 'Los préstamos se cargaron exitosamente',
+    CONFIRM_PRESTAMO_OK = 'El crédito se autorizó exitosamente'
 }
