@@ -1,4 +1,9 @@
-import { addDays, compareAsc, differenceInDays, format } from 'date-fns';
+import {
+    addDays,
+    compareAsc,
+    differenceInCalendarDays,
+    format
+} from 'date-fns';
 import { Service } from 'typedi';
 
 export interface CalculoPagoInput {
@@ -18,6 +23,7 @@ export interface CalculoPagoOutput {
 export abstract class ICalculoPago {
     protected fechaExpiracion: Date;
     protected fechaExpedicion: Date;
+    protected fechaExpedicionIsMesInicio: boolean;
     protected numberDays: number;
 
     constructor(numberDays: number) {
@@ -28,8 +34,11 @@ export abstract class ICalculoPago {
         totalAPagar: number,
         input: CalculoPagoInput
     ): Array<CalculoPagoOutput> {
-        this.fechaExpiracion = new Date(input.fechaExpiracion);
         this.fechaExpedicion = new Date(input.fechaExpedicion);
+        this.fechaExpiracion = new Date(input.fechaExpiracion);
+
+        this.fechaExpedicionIsMesInicio =
+            parseInt(format(this.fechaExpedicion, 'dd')) === 1;
 
         const numberPayments = this.calculateNumberPayments();
         const amountPerPay = this.calculateAmountPerPay(
@@ -44,27 +53,17 @@ export abstract class ICalculoPago {
     }
 
     protected calculateNumberPayments(): number {
-        const numDias: number = differenceInDays(
+        const numDias: number = differenceInCalendarDays(
             this.fechaExpiracion,
             this.fechaExpedicion
         );
         return Math.trunc(numDias / this.numberDays);
     }
 
-    protected calculateAmountPerPay(
+    protected calculateAmountPerPay = (
         totalAPagar: number,
         numberPayments: number
-    ): number {
-        const exactNumberPayments =
-            compareAsc(
-                addDays(this.fechaExpedicion, numberPayments * this.numberDays),
-                this.fechaExpiracion
-            ) === 0;
-
-        return exactNumberPayments
-            ? Math.trunc(totalAPagar / Math.abs(numberPayments))
-            : Math.trunc(totalAPagar / (Math.abs(numberPayments) + 1));
-    }
+    ): number => Math.trunc(totalAPagar / Math.abs(numberPayments));
 
     protected calculatePayments(
         totalAPagar: number,
@@ -72,32 +71,31 @@ export abstract class ICalculoPago {
         amountPerPay: number
     ): Array<CalculoPagoOutput> {
         const pagos: Array<CalculoPagoOutput> = [];
-        let contPayment = 1;
-        while (contPayment <= numberPayments) {
-            this.fechaExpedicion = addDays(
-                this.fechaExpedicion,
-                this.numberDays
-            );
+        this.fechaExpedicion = addDays(this.fechaExpedicion, this.numberDays);
+        this.compenseDays();
+        while (compareAsc(this.fechaExpedicion, this.fechaExpiracion) <= 0) {
             pagos.push({
                 fechaPago: format(this.fechaExpedicion, 'MM/dd/yyyy'),
                 montoPago: amountPerPay
             });
-            contPayment++;
+            this.fechaExpedicion = addDays(
+                this.fechaExpedicion,
+                this.numberDays
+            );
+            this.compenseDays();
         }
-
-        if (compareAsc(this.fechaExpedicion, this.fechaExpiracion) < 0) {
-            pagos.push({
-                fechaPago: format(this.fechaExpiracion, 'MM/dd/yyyy'),
-                montoPago: totalAPagar - amountPerPay * numberPayments
-            });
-        }
-
-        const numPagos = pagos.length;
-        pagos[numPagos - 1].montoPago =
-            totalAPagar - (numPagos - 1) * amountPerPay;
-
+        const subTotal = amountPerPay * numberPayments;
+        const numPays = pagos.length;
+        pagos[numPays - 1].montoPago =
+            pagos[numPays - 1].montoPago + (totalAPagar - subTotal);
+        pagos[numPays - 1].fechaPago = format(
+            this.fechaExpiracion,
+            'MM/dd/yyyy'
+        );
         return pagos;
     }
+
+    protected compenseDays() {}
 }
 @Service()
 export class CalculoPago {
