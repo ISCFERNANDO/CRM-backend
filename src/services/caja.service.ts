@@ -5,8 +5,12 @@ import { CajaRepository } from '../repositories/caja.repository';
 import { HttpStatus } from './../constants/http-status';
 import { Messages } from './../constants/messages';
 import { CajaDTO, IngresoEfectivoDTO } from './../dto/caja.dto';
-import { CajaTransactionService } from './transactions/caja-transaction.service';
+import {
+    CajaTransactionService,
+    ICajaTransaction
+} from './transactions/caja-transaction.service';
 import { IngresoFondoTransaction } from './transactions/ingreso-fondo';
+import { RetiroFondoPorUsuarioTransaction } from './transactions/retiro-fondo-por-usuario';
 import { TypeTransactionService } from './type-transaction.service';
 
 @Service()
@@ -39,9 +43,27 @@ export class CajaService {
         return this.mapCaja(caja, true);
     }
 
-    async ingresoEfectivo(ingreso: IngresoEfectivoDTO) {
+    ingresoEfectivo = (ingreso: IngresoEfectivoDTO) =>
+        this.executeTransaction(
+            ingreso,
+            'INGRESO_FONDO',
+            new IngresoFondoTransaction()
+        );
+
+    retiroEfectivo = (ingreso: IngresoEfectivoDTO) =>
+        this.executeTransaction(
+            ingreso,
+            'RETIRO_POR_USUARIO',
+            new RetiroFondoPorUsuarioTransaction()
+        );
+
+    private async executeTransaction(
+        ingreso: IngresoEfectivoDTO,
+        typeTransactionKey: string,
+        transaction: ICajaTransaction
+    ) {
         const typeTransaction: TypeTransactionDTO = await this.typeTransactionService.findTypeTransacionByKey(
-            'INGRESO_FONDO'
+            typeTransactionKey
         );
         return this.cajaTransactionService.registerTransaction(
             {
@@ -52,7 +74,7 @@ export class CajaService {
                 transactionDate: ingreso.transactionDate
             },
             ingreso.cajaId,
-            new IngresoFondoTransaction()
+            transaction
         );
     }
 

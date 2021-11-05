@@ -22,6 +22,10 @@ const initializeCajaRoutes = (): Router => {
     routes
         .route('/v1/cajas/:id/ingresos')
         .post((req, res, next) => controller.ingresoEfectivo(req, res, next));
+
+    routes
+        .route('/v1/cajas/:id/retiros')
+        .post((req, res, next) => controller.retiroEfectivo(req, res, next));
     return routes;
 };
 

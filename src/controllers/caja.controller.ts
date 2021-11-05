@@ -65,4 +65,19 @@ export class CajaController {
             next(error);
         }
     }
+
+    public async retiroEfectivo(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const requestBody: IngresoEfectivoDTO = req.body;
+            requestBody.cajaId = req.params.id;
+            const data = await this.cajaService.retiroEfectivo(requestBody);
+            responseHandler(res, Messages.ADD_INGRESO_CAJA_OK, data);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
