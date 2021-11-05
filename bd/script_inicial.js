@@ -301,3 +301,38 @@ db.statusPrestamo.insertMany([
         isSystem: true
     }
 ]);
+
+db.typeTransaction.insertMany([
+    {
+        _id: ObjectId('6184ba6d1447be014c130134'),
+        key: 'INGRESO_FONDO',
+        name: 'Ingreso de fondo',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('6184ba6d1447be014c130135'),
+        key: 'RETIRO_POR_PRESTAMO',
+        name: 'Retiro por prestamo',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('6184ba6d1447be014c130136'),
+        key: 'INGRESO_POR_PAGO_DE_PRESTAMO',
+        name: 'Ingreso por pago o abono de prestamo',
+        active: true,
+        deleted: false,
+        isSystem: true
+    },
+    {
+        _id: ObjectId('6184ba6d1447be014c130137'),
+        key: 'RETIRO_POR_USUARIO',
+        name: 'Retiro por usuario (disposición de efectivo)',
+        active: true,
+        deleted: false,
+        isSystem: true
+    }
+]);
