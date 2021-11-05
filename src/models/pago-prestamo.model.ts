@@ -2,11 +2,7 @@ import mongoose from '../utils/db_connection';
 
 const pagoPrestamoModel = new mongoose.Schema(
     {
-        prestamo: {
-            type: mongoose.Types.ObjectId,
-            ref: 'prestamo'
-        },
-        fechaPago: String,
+        fechaPago: Date,
         monto: Number,
         pagado: Boolean,
         deleted: Boolean,

@@ -44,6 +44,12 @@ const prestamoModel = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'statusPrestamo'
         },
+        pagos: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'pagoPrestamo'
+            }
+        ],
         deleted: Boolean,
         active: Boolean
     },

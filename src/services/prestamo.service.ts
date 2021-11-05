@@ -1,4 +1,4 @@
-import { differenceInDays } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 import { Service } from 'typedi';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
@@ -35,16 +35,20 @@ export class PrestamoService implements IPrestamoService {
                     contract.datosCredito.porcentajeInteresMensual
             }
         );
+        const result: Array<any> = await this.pagoPrestamoRepository.addAllPagoPrestamo(
+            pagos,
+            contract.id
+        );
         const statusPrestamo = await this.statusPrestamoService.findByKey(
             'PENDIENTE_CONFIRMACION'
         );
         contract.statusPrestamo = statusPrestamo.id;
-        const data = await this.prestamoRepository.addPrestamo(contract);
-        contract.id = data._id;
-        await this.pagoPrestamoRepository.addAllPagoPrestamo(
-            pagos,
-            contract.id
+        const data = await this.prestamoRepository.addPrestamo(
+            contract,
+            result
         );
+
+        contract.id = data._id;
         contract.pagos = pagos;
         return contract;
     }
@@ -65,10 +69,14 @@ export class PrestamoService implements IPrestamoService {
     }
 
     private mapPrestamo(prestamo: any, currentDate: any): PrestamoItemDTO {
-        const differenceDays = differenceInDays(
-            new Date(prestamo.datosCredito.fechaVencimiento),
-            currentDate
-        );
+        console.log('pagos prestamo ', prestamo._id, ' => ', prestamo.pagos);
+        const proximoPago = prestamo?.pagos[0] ?? null;
+        const differenceDays = proximoPago
+            ? differenceInCalendarDays(
+                  new Date(proximoPago.fechaPago),
+                  currentDate
+              )
+            : 0;
         return {
             id: prestamo._id,
             autorizadorCreditoId: prestamo.autorizadorCredito,
@@ -86,10 +94,17 @@ export class PrestamoService implements IPrestamoService {
                 totalPagar: prestamo.datosCredito.totalPagar,
                 fechaExpedicion: prestamo.datosCredito.fechaExpedicion,
                 fechaVencimiento: prestamo.datosCredito.fechaVencimiento,
+                proximoPago: proximoPago
+                    ? {
+                          fechaPago: proximoPago.fechaPago,
+                          montoPago: proximoPago.monto
+                      }
+                    : null,
                 moneda: prestamo.datosCredito.moneda.name,
+                formaPago: prestamo.datosCredito.formaPago.name,
                 liquidated: prestamo.datosCredito.liquidated
             },
-            diasRestantesParaVencimiento:
+            diasRestantesParaProximoPago:
                 differenceDays >= 0 ? differenceDays : 0,
             diasVencidos: differenceDays < 0 ? Math.abs(differenceDays) : 0,
             statusCredito: prestamo.statusPrestamo.name,

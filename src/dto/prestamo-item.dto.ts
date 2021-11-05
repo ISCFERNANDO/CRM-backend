@@ -1,3 +1,4 @@
+import { CalculoPagoOutput } from './../services/calculo-pagos-credito/calculo-pago';
 import { DireccionDTO } from './customer.dto';
 
 export interface PrestamoItemDTO {
@@ -6,7 +7,7 @@ export interface PrestamoItemDTO {
     contratanteCredito: ContratanteCreditoDTO;
     datosCredito: DatosCreditoDTO;
     direccionContratacion?: DireccionDTO;
-    diasRestantesParaVencimiento: number;
+    diasRestantesParaProximoPago: number;
     diasVencidos: number;
     statusCredito: string;
     active: boolean;
@@ -14,10 +15,12 @@ export interface PrestamoItemDTO {
 
 export interface DatosCreditoDTO {
     fechaExpedicion: string;
+    fechaVencimiento: string;
+    proximoPago: CalculoPagoOutput | null;
     moneda: string;
     totalPagar: number;
-    fechaVencimiento: string;
     liquidated: boolean;
+    formaPago: string;
 }
 
 export interface ContratanteCreditoDTO {
