@@ -23,20 +23,18 @@ export class PrestamoRepository implements IPrestamoRepository {
         PrestamoModel.findByIdAndUpdate(id, { ...contract });
 
     public async findAllPrestamos(): Promise<Array<any>> {
-        return (
-            PrestamoModel.where({ deleted: false })
-                .populate('contratanteCredito')
-                .populate('datosCredito.moneda')
-                .populate('datosCredito.formaPago')
-                .populate('statusPrestamo')
-                //.populate('pagos');
-                .populate({
-                    path: 'pagos',
-                    options: {
-                        sort: { fechaPago: 1 }
-                    }
-                })
-        );
+        return PrestamoModel.where({ deleted: false })
+            .populate('contratanteCredito')
+            .populate('datosCredito.moneda')
+            .populate('datosCredito.formaPago')
+            .populate('statusPrestamo')
+            .populate({
+                path: 'pagos',
+                match: { pagado: false },
+                options: {
+                    sort: { fechaPago: 1 }
+                }
+            });
     }
 
     private prestamoDtoToModel(contract: PrestamoDTO, pagos: Array<any>): any {
