@@ -1,13 +1,21 @@
+import { TypeTransactionDTO } from '@/dto/type-transaction.dto';
 import { Service } from 'typedi';
 import HttpException from '../common/http.exception';
 import { CajaRepository } from '../repositories/caja.repository';
 import { HttpStatus } from './../constants/http-status';
 import { Messages } from './../constants/messages';
-import { CajaDTO } from './../dto/caja.dto';
+import { CajaDTO, IngresoEfectivoDTO } from './../dto/caja.dto';
+import { CajaTransactionService } from './transactions/caja-transaction.service';
+import { IngresoFondoTransaction } from './transactions/ingreso-fondo';
+import { TypeTransactionService } from './type-transaction.service';
 
 @Service()
 export class CajaService {
-    constructor(private cajaRepository: CajaRepository) {}
+    constructor(
+        private cajaRepository: CajaRepository,
+        private cajaTransactionService: CajaTransactionService,
+        private typeTransactionService: TypeTransactionService
+    ) {}
 
     async addCaja(caja: CajaDTO): Promise<CajaDTO> {
         if (await this.cajaRepository.findCajaByName(caja.name)) {
@@ -21,6 +29,50 @@ export class CajaService {
         return caja;
     }
 
+    async findAll(): Promise<Array<CajaDTO>> {
+        const listOfCajas = await this.cajaRepository.findAll();
+        return listOfCajas.map((item) => this.mapCaja(item));
+    }
+
+    async findById(id: string): Promise<CajaDTO> {
+        const caja = await this.cajaRepository.findCajaById(id);
+        return this.mapCaja(caja, true);
+    }
+
+    async ingresoEfectivo(ingreso: IngresoEfectivoDTO) {
+        const typeTransaction: TypeTransactionDTO = await this.typeTransactionService.findTypeTransacionByKey(
+            'INGRESO_FONDO'
+        );
+        return this.cajaTransactionService.registerTransaction(
+            {
+                amountTransaction: ingreso.amountTransaction,
+                typeTransaction: typeTransaction.id,
+                confirmed: true,
+                description: ingreso.description,
+                transactionDate: ingreso.transactionDate
+            },
+            ingreso.cajaId,
+            new IngresoFondoTransaction()
+        );
+    }
+
+    async updateBalance(
+        cajaId: string,
+        transactionId: string,
+        amount: number,
+        isIngreso: boolean
+    ): Promise<CajaDTO> {
+        const caja: any = await this.cajaRepository.findCajaById(cajaId);
+        caja.balance = isIngreso
+            ? caja.balance + amount
+            : caja.balance - amount;
+        caja.transactions?.push(transactionId);
+        return this.cajaRepository.updateCaja(cajaId, {
+            balance: caja.balance,
+            transactions: caja.transactions
+        });
+    }
+
     async findCajaByName(name: string): Promise<CajaDTO> {
         const caja = await this.cajaRepository.findCajaByName(name);
         if (!caja) {
@@ -32,14 +84,30 @@ export class CajaService {
         return this.mapCaja(caja);
     }
 
-    private mapCaja(caja: any): CajaDTO {
-        return {
-            id: caja._id,
-            name: caja.name,
-            balance: caja.balance,
+    private mapCaja(item: any, details?: boolean): CajaDTO {
+        console.log('transactions => ', item.transactions[0]);
+        const caja: CajaDTO = {
+            id: item._id,
+            name: item.name,
+            balance: item.balance,
             transactions: [],
-            active: caja.active,
-            deleted: caja.deleted
+            active: item.active,
+            deleted: item.deleted
         };
+        if (details) {
+            caja.transactions = item.transactions.map((t: any) => {
+                return {
+                    id: t._id,
+                    typeTransaction: t.typeTransaction.name,
+                    transactionDate: t.transactionDate,
+                    description: t.description,
+                    amountTransaction: t.transactionAmount,
+                    confirmed: t.confirmed,
+                    active: t.active,
+                    deleted: t.deleted
+                };
+            });
+        }
+        return caja;
     }
 }

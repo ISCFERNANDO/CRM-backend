@@ -10,9 +10,18 @@ const initializeCajaRoutes = (): Router => {
     const routes = Router();
     routes
         .route('/v1/cajas')
+        .get((req, res, next) => controller.findAll(req, res, next))
         .post(createCajaValidator, (req, res, next) =>
             controller.addCaja(req, res, next)
         );
+
+    routes
+        .route('/v1/cajas/:id')
+        .get((req, res, next) => controller.findById(req, res, next));
+
+    routes
+        .route('/v1/cajas/:id/ingresos')
+        .post((req, res, next) => controller.ingresoEfectivo(req, res, next));
     return routes;
 };
 

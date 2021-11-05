@@ -50,5 +50,6 @@ export enum Messages {
 
     CAJA_EXIST = 'Ya existe una caja con el mismo nombre',
     CAJA_NO_EXIST = 'No existe una caja con el nombre',
-    ADD_CAJA_OK = 'La caja se registró correctamente'
+    ADD_CAJA_OK = 'La caja se registró correctamente',
+    ADD_INGRESO_CAJA_OK = 'Ingreso de efectivo realizado exitosamente'
 }
