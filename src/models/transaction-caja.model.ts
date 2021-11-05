@@ -10,6 +10,7 @@ const transactionCajaModel = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'user'
         },
+        transactionDate: Date,
         description: String,
         transactionAmount: Number,
         confirmed: Boolean,

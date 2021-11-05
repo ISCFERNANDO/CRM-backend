@@ -3,6 +3,7 @@ import { authValidatorMiddleware } from './../../../middlewares/auth-validator.m
 import { initializeAccessRoutes } from './acceso.routes';
 import { initializeAddressRouter } from './address.routes';
 import { initializeAuthRoutes } from './auth.routes';
+import { initializeCajaRoutes } from './caja.routes';
 import { initializeCatalogRoutes } from './catalog.routes';
 import { initializeCustomerRoutes } from './customer.routes';
 import { initializeInterestRoutes } from './interest.routes';
@@ -25,7 +26,8 @@ const initializeRoutes = (): Router => {
         initializeUserRoutes(),
         initializeCatalogRoutes(),
         initializeInterestRoutes(),
-        initializePrestamoRoutes()
+        initializePrestamoRoutes(),
+        initializeCajaRoutes()
     );
 
     return routes;

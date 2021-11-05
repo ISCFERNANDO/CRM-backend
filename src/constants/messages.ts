@@ -46,5 +46,9 @@ export enum Messages {
 
     ADD_PRESTAMO_OK = 'El prestamo se otorgó exitosamente',
     GET_PRESTAMOS_OK = 'Los préstamos se cargaron exitosamente',
-    CONFIRM_PRESTAMO_OK = 'El crédito se autorizó exitosamente'
+    CONFIRM_PRESTAMO_OK = 'El crédito se autorizó exitosamente',
+
+    CAJA_EXIST = 'Ya existe una caja con el mismo nombre',
+    CAJA_NO_EXIST = 'No existe una caja con el nombre',
+    ADD_CAJA_OK = 'La caja se registró correctamente'
 }
