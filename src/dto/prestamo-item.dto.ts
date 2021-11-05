@@ -1,5 +1,6 @@
 import { CalculoPagoOutput } from './../services/calculo-pagos-credito/calculo-pago';
 import { DireccionDTO } from './customer.dto';
+import { SemaforoDTO } from './semaforo.dto';
 
 export interface PrestamoItemDTO {
     id: string;
@@ -10,6 +11,7 @@ export interface PrestamoItemDTO {
     diasRestantesParaProximoPago: number;
     diasVencidos: number;
     statusCredito: string;
+    semaforo: SemaforoDTO | null;
     active: boolean;
 }
 

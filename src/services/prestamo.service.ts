@@ -2,10 +2,12 @@ import { differenceInCalendarDays } from 'date-fns';
 import { Service } from 'typedi';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
+import { SemaforoDTO } from './../dto/semaforo.dto';
 import { PagoPrestamoRepository } from './../repositories/pago-prestamo.model';
 import { PrestamoRepository } from './../repositories/prestamo.repository';
 import { CalculoPagoOutput } from './calculo-pagos-credito/calculo-pago';
 import { CalculoPagosPrestamoService } from './calculo-pagos-credito/calculo-pagos-credito.service';
+import { SemaforoService } from './semaforo.service';
 import { StatusPrestamoService } from './status-prestamo.service';
 
 export interface IPrestamoService {
@@ -20,7 +22,8 @@ export class PrestamoService implements IPrestamoService {
         private prestamoRepository: PrestamoRepository,
         private calculoPagosService: CalculoPagosPrestamoService,
         private pagoPrestamoRepository: PagoPrestamoRepository,
-        private statusPrestamoService: StatusPrestamoService
+        private statusPrestamoService: StatusPrestamoService,
+        private semaforoService: SemaforoService
     ) {}
 
     async addPrestamo(contract: PrestamoDTO): Promise<void | PrestamoDTO> {
@@ -77,6 +80,9 @@ export class PrestamoService implements IPrestamoService {
                   currentDate
               )
             : 0;
+        const semaforo: SemaforoDTO | null = this.semaforoService.calculateColorSemaforo(
+            differenceDays
+        );
         return {
             id: prestamo._id,
             autorizadorCreditoId: prestamo.autorizadorCredito,
@@ -107,10 +113,9 @@ export class PrestamoService implements IPrestamoService {
             diasRestantesParaProximoPago:
                 differenceDays >= 0 ? differenceDays : 0,
             diasVencidos: differenceDays < 0 ? Math.abs(differenceDays) : 0,
+            semaforo,
             statusCredito: prestamo.statusPrestamo.name,
             active: prestamo.active
         };
-
-        //id, nombre y apellidos del contratante, telefono, adeudo, fecha vencimiento, liquidado
     }
 }
