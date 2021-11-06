@@ -10,7 +10,9 @@ import {
     ICajaTransaction
 } from './transactions/caja-transaction.service';
 import { IngresoFondoTransaction } from './transactions/ingreso-fondo';
+import { IngresoFondoPorPagoPrestamoTransaction } from './transactions/ingreso-porpago-prestamo';
 import { RetiroFondoPorUsuarioTransaction } from './transactions/retiro-fondo-por-usuario';
+import { RetiroFondoPorPrestamoTransaction } from './transactions/retiro-por-prestamo';
 import { TypeTransactionService } from './type-transaction.service';
 
 @Service()
@@ -43,18 +45,36 @@ export class CajaService {
         return this.mapCaja(caja, true);
     }
 
-    ingresoEfectivo = (ingreso: IngresoEfectivoDTO) =>
+    ingresoEfectivo = (ingreso: IngresoEfectivoDTO): Promise<CajaDTO> =>
         this.executeTransaction(
             ingreso,
             'INGRESO_FONDO',
             new IngresoFondoTransaction()
         );
 
-    retiroEfectivo = (ingreso: IngresoEfectivoDTO) =>
+    retiroEfectivo = (ingreso: IngresoEfectivoDTO): Promise<CajaDTO> =>
         this.executeTransaction(
             ingreso,
             'RETIRO_POR_USUARIO',
             new RetiroFondoPorUsuarioTransaction()
+        );
+
+    retiroEfectivoPorPrestamo = (
+        ingreso: IngresoEfectivoDTO
+    ): Promise<CajaDTO> =>
+        this.executeTransaction(
+            ingreso,
+            'RETIRO_POR_PRESTAMO',
+            new RetiroFondoPorPrestamoTransaction()
+        );
+
+    ingresoEfectivoPorPagoPrestamo = (
+        ingreso: IngresoEfectivoDTO
+    ): Promise<CajaDTO> =>
+        this.executeTransaction(
+            ingreso,
+            'INGRESO_POR_PAGO_DE_PRESTAMO',
+            new IngresoFondoPorPagoPrestamoTransaction()
         );
 
     private async executeTransaction(

@@ -1,10 +1,14 @@
-import { differenceInCalendarDays } from 'date-fns';
+import { differenceInCalendarDays, format } from 'date-fns';
 import { Service } from 'typedi';
+import HttpException from '../common/http.exception';
+import { HttpStatus } from './../constants/http-status';
+import { Messages } from './../constants/messages';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
 import { SemaforoDTO } from './../dto/semaforo.dto';
 import { PagoPrestamoRepository } from './../repositories/pago-prestamo.model';
 import { PrestamoRepository } from './../repositories/prestamo.repository';
+import { CajaService } from './caja.service';
 import { CalculoPagoOutput } from './calculo-pagos-credito/calculo-pago';
 import { CalculoPagosPrestamoService } from './calculo-pagos-credito/calculo-pagos-credito.service';
 import { SemaforoService } from './semaforo.service';
@@ -23,10 +27,23 @@ export class PrestamoService implements IPrestamoService {
         private calculoPagosService: CalculoPagosPrestamoService,
         private pagoPrestamoRepository: PagoPrestamoRepository,
         private statusPrestamoService: StatusPrestamoService,
-        private semaforoService: SemaforoService
+        private semaforoService: SemaforoService,
+        private cajaService: CajaService
     ) {}
 
     async addPrestamo(contract: PrestamoDTO): Promise<void | PrestamoDTO> {
+        const caja = await this.cajaService.findCajaByName('CAJA LUIS');
+        if (
+            !this.montoMenorABalanceCaja(
+                caja.balance,
+                contract.datosCredito.montoPrestamo
+            )
+        ) {
+            throw new HttpException(
+                HttpStatus.CONFLICT,
+                Messages.FONDO_INSUFICIENTE_PARA_PRESTAMO
+            );
+        }
         const pagos: Array<CalculoPagoOutput> = await this.calculoPagosService.calcularPagos(
             {
                 fechaExpedicion: contract.datosCredito.fechaExpedicion,
@@ -51,10 +68,21 @@ export class PrestamoService implements IPrestamoService {
             result
         );
 
+        //registrar transaccion y ajuste de balance de caja
+        await this.cajaService.retiroEfectivoPorPrestamo({
+            amountTransaction: contract.datosCredito.montoPrestamo,
+            cajaId: caja.id,
+            description: 'Expedición de crédito',
+            transactionDate: format(new Date(), 'MM/dd/yyyy')
+        });
+
         contract.id = data._id;
         contract.pagos = pagos;
         return contract;
     }
+
+    montoMenorABalanceCaja = (balanceCaja: number, montoEgreso: number) =>
+        montoEgreso <= balanceCaja;
 
     async confirmPrestamo(id: string): Promise<any> {
         const statusPrestamo = await this.statusPrestamoService.findByKey(
