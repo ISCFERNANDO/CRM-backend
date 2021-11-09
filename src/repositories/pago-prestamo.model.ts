@@ -44,6 +44,9 @@ export class PagoPrestamoRepository implements IPagoPrestamoRepository {
             prestamo: prestamoId,
             fechaPago: contract.fechaPago,
             monto: contract.montoPago,
+            montoInteres: contract.montoInteres,
+            pagoCompleto: false,
+            pagoInteres: false,
             pagado: false,
             deleted: false,
             active: true

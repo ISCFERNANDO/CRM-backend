@@ -4,7 +4,10 @@ const pagoPrestamoModel = new mongoose.Schema(
     {
         fechaPago: Date,
         monto: Number,
+        montoInteres: Number,
         pagado: Boolean,
+        pagoCompleto: Boolean,
+        pagoInteres: Boolean,
         deleted: Boolean,
         active: Boolean
     },

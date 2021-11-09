@@ -100,7 +100,6 @@ export class PrestamoService implements IPrestamoService {
     }
 
     private mapPrestamo(prestamo: any, currentDate: any): PrestamoItemDTO {
-        console.log('pagos prestamo ', prestamo._id, ' => ', prestamo.pagos);
         const proximoPago = prestamo?.pagos[0] ?? null;
         const differenceDays = proximoPago
             ? differenceInCalendarDays(
@@ -130,8 +129,10 @@ export class PrestamoService implements IPrestamoService {
                 fechaVencimiento: prestamo.datosCredito.fechaVencimiento,
                 proximoPago: proximoPago
                     ? {
+                          id: proximoPago.id,
                           fechaPago: proximoPago.fechaPago,
-                          montoPago: proximoPago.monto
+                          montoPago: proximoPago.monto,
+                          montoInteres: proximoPago.montoInteres
                       }
                     : null,
                 moneda: prestamo.datosCredito.moneda.name,

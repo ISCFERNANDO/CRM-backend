@@ -16,8 +16,13 @@ export interface CalculoPagoInput {
 }
 
 export interface CalculoPagoOutput {
+    id?: string;
     fechaPago: string;
     montoPago: number;
+    montoInteres: number;
+    pagado?: boolean;
+    pagoCompleto?: boolean;
+    pagoInteres?: boolean;
 }
 
 export abstract class ICalculoPago {
@@ -46,6 +51,7 @@ export abstract class ICalculoPago {
             numberPayments
         );
         return this.calculatePayments(
+            input.montoPrestamo,
             totalAPagar,
             numberPayments,
             amountPerPay
@@ -66,6 +72,7 @@ export abstract class ICalculoPago {
     ): number => Math.trunc(totalAPagar / Math.abs(numberPayments));
 
     protected calculatePayments(
+        montoPrestamo: number,
         totalAPagar: number,
         numberPayments: number,
         amountPerPay: number
@@ -73,10 +80,18 @@ export abstract class ICalculoPago {
         const pagos: Array<CalculoPagoOutput> = [];
         this.fechaExpedicion = addDays(this.fechaExpedicion, this.numberDays);
         this.compenseDays();
+        const totalInterest = totalAPagar - montoPrestamo;
+        const interestForPayment = Math.trunc(totalInterest / numberPayments);
+
         while (compareAsc(this.fechaExpedicion, this.fechaExpiracion) <= 0) {
             pagos.push({
                 fechaPago: format(this.fechaExpedicion, 'MM/dd/yyyy'),
-                montoPago: amountPerPay
+                montoPago: amountPerPay,
+
+                montoInteres: interestForPayment,
+                pagado: false,
+                pagoCompleto: false,
+                pagoInteres: false
             });
             this.fechaExpedicion = addDays(
                 this.fechaExpedicion,
@@ -85,9 +100,15 @@ export abstract class ICalculoPago {
             this.compenseDays();
         }
         const subTotal = amountPerPay * numberPayments;
+        const subTotalInterest = interestForPayment * numberPayments;
         const numPays = pagos.length;
         pagos[numPays - 1].montoPago =
             pagos[numPays - 1].montoPago + (totalAPagar - subTotal);
+
+        pagos[numPays - 1].montoInteres =
+            pagos[numPays - 1].montoInteres +
+            (totalInterest - subTotalInterest);
+
         pagos[numPays - 1].fechaPago = format(
             this.fechaExpiracion,
             'MM/dd/yyyy'
