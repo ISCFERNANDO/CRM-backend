@@ -7,6 +7,7 @@ import { initializeCajaRoutes } from './caja.routes';
 import { initializeCatalogRoutes } from './catalog.routes';
 import { initializeCustomerRoutes } from './customer.routes';
 import { initializeInterestRoutes } from './interest.routes';
+import { initializePaymentRoutes } from './payment.routes';
 import { initializePrestamoRoutes } from './prestamo.routes';
 import { initializeRollRoutes } from './roll.routes';
 import { initializeFileUploadRoutes } from './upload.routes';
@@ -27,7 +28,8 @@ const initializeRoutes = (): Router => {
         initializeCatalogRoutes(),
         initializeInterestRoutes(),
         initializePrestamoRoutes(),
-        initializeCajaRoutes()
+        initializeCajaRoutes(),
+        initializePaymentRoutes()
     );
 
     return routes;

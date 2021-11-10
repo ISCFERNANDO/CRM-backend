@@ -1,4 +1,5 @@
 export enum Messages {
+    FUNCTION_NOT_AVAILABLE = 'Funcionalidad no disponible',
     NOT_FOUND_ENDPOINT = 'No se encontró el recurso',
     OPERATION_OK = 'Operación exitosa',
     ADD_ACCESS_OK = 'El acceso se agregó correctamente',
@@ -52,5 +53,8 @@ export enum Messages {
     CAJA_NO_EXIST = 'No existe una caja con el nombre',
     ADD_CAJA_OK = 'La caja se registró correctamente',
     ADD_INGRESO_CAJA_OK = 'Ingreso de efectivo realizado exitosamente',
-    FONDO_INSUFICIENTE_PARA_PRESTAMO = 'No se puede otorgar el préstamo ya que no hay fondos suficientes'
+    FONDO_INSUFICIENTE_PARA_PRESTAMO = 'No se puede otorgar el préstamo ya que no hay fondos suficientes',
+    PAGO_INCOMPLETO = 'El pago debe ser completo ya que es el último pago',
+
+    PAYMENT_OK = 'El pago se realizó exitosamente'
 }

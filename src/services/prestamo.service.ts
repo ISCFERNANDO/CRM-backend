@@ -1,12 +1,12 @@
 import { differenceInCalendarDays, format } from 'date-fns';
 import { Service } from 'typedi';
 import HttpException from '../common/http.exception';
+import { PagoPrestamoRepository } from '../repositories/pago-prestamo.repository';
 import { HttpStatus } from './../constants/http-status';
 import { Messages } from './../constants/messages';
 import { PrestamoItemDTO } from './../dto/prestamo-item.dto';
 import { PrestamoDTO } from './../dto/prestamo.dto';
 import { SemaforoDTO } from './../dto/semaforo.dto';
-import { PagoPrestamoRepository } from './../repositories/pago-prestamo.model';
 import { PrestamoRepository } from './../repositories/prestamo.repository';
 import { CajaService } from './caja.service';
 import { CalculoPagoOutput } from './calculo-pagos-credito/calculo-pago';
@@ -16,8 +16,10 @@ import { StatusPrestamoService } from './status-prestamo.service';
 
 export interface IPrestamoService {
     addPrestamo(contract: PrestamoDTO): Promise<PrestamoDTO | void>;
+    updatePrestamo(contract: any, prestamoId: string): Promise<any>;
     confirmPrestamo(id: string): Promise<void>;
     findAllPrestamos(): Promise<Array<PrestamoItemDTO>>;
+    findPrestamoById(prestamoId: string): Promise<PrestamoItemDTO>;
 }
 
 @Service()
@@ -30,6 +32,12 @@ export class PrestamoService implements IPrestamoService {
         private semaforoService: SemaforoService,
         private cajaService: CajaService
     ) {}
+
+    updatePrestamo = (contract: any, prestamoId: string): Promise<any> =>
+        this.prestamoRepository.updatePrestamo(prestamoId, contract);
+
+    findPrestamoById = (prestamoId: string): Promise<any> =>
+        this.prestamoRepository.findPrestamoById(prestamoId);
 
     async addPrestamo(contract: PrestamoDTO): Promise<void | PrestamoDTO> {
         const caja = await this.cajaService.findCajaByName('CAJA LUIS');

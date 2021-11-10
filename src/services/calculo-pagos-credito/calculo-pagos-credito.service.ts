@@ -32,8 +32,10 @@ export class CalculoPagosPrestamoService {
         const totalAPagar = this.calculaTotalAPagar(
             +input.montoPrestamo,
             input.porcentajeInteresMensual,
-            plazoCredito.value
+            input.numPagosRestantes ?? plazoCredito.value
         );
+
+        console.log('total a pagar => ', totalAPagar);
 
         return this.calculaPagosPorFormaPago(
             totalAPagar,

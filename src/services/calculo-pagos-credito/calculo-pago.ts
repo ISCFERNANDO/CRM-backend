@@ -12,6 +12,7 @@ export interface CalculoPagoInput {
     montoPrestamo: number;
     formaPagoId: string;
     plazoCreditoId: string;
+    numPagosRestantes?: number;
     porcentajeInteresMensual: number;
 }
 
@@ -19,7 +20,7 @@ export interface CalculoPagoOutput {
     id?: string;
     fechaPago: string;
     montoPago: number;
-    montoInteres: number;
+    montoInteres?: number;
     pagado?: boolean;
     pagoCompleto?: boolean;
     pagoInteres?: boolean;
@@ -50,6 +51,7 @@ export abstract class ICalculoPago {
             totalAPagar,
             numberPayments
         );
+        console.log('amountPerPay ==> ', amountPerPay);
         return this.calculatePayments(
             input.montoPrestamo,
             totalAPagar,
@@ -106,8 +108,8 @@ export abstract class ICalculoPago {
             pagos[numPays - 1].montoPago + (totalAPagar - subTotal);
 
         pagos[numPays - 1].montoInteres =
-            pagos[numPays - 1].montoInteres +
-            (totalInterest - subTotalInterest);
+            pagos[numPays - 1].montoInteres ??
+            0 + (totalInterest - subTotalInterest);
 
         pagos[numPays - 1].fechaPago = format(
             this.fechaExpiracion,

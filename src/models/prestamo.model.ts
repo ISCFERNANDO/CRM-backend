@@ -28,6 +28,8 @@ const prestamoModel = new mongoose.Schema(
             porcentajeInteresMensual: Number,
             porcentajeInteresMoratorio: Number,
             totalPagar: Number,
+            montoPagado: Number,
+            capitalPagado: Number,
             fechaVencimiento: String,
             liquidated: Boolean
         },
@@ -48,6 +50,12 @@ const prestamoModel = new mongoose.Schema(
             {
                 type: mongoose.Types.ObjectId,
                 ref: 'pagoPrestamo'
+            }
+        ],
+        pagosRealizados: [
+            {
+                montoPago: Number,
+                fechaPago: Date
             }
         ],
         deleted: Boolean,

@@ -7,10 +7,14 @@ export interface IPrestamoRepository {
     addPrestamo(contract: PrestamoDTO, pagos: Array<any>): Promise<any>;
     updatePrestamo(id: string, contract: any): Promise<any>;
     findAllPrestamos(): Promise<Array<any>>;
+    findPrestamoById(prestamoId: string): Promise<any>;
 }
 
 @Service()
 export class PrestamoRepository implements IPrestamoRepository {
+    findPrestamoById = (prestamoId: string): Promise<any> =>
+        PrestamoModel.findById(prestamoId);
+
     public addPrestamo = (
         contract: PrestamoDTO,
         pagos: Array<any>
@@ -23,6 +27,7 @@ export class PrestamoRepository implements IPrestamoRepository {
         PrestamoModel.findByIdAndUpdate(id, { ...contract });
 
     public async findAllPrestamos(): Promise<Array<any>> {
+        //const currentDate = new Date();
         return PrestamoModel.where({ deleted: false })
             .populate('contratanteCredito')
             .populate('datosCredito.moneda')
@@ -30,7 +35,10 @@ export class PrestamoRepository implements IPrestamoRepository {
             .populate('statusPrestamo')
             .populate({
                 path: 'pagos',
-                match: { pagado: false },
+                match: {
+                    pagado: false
+                    //fechaPago: { $lte: currentDate }
+                },
                 options: {
                     sort: { fechaPago: 1 }
                 }
@@ -53,11 +61,14 @@ export class PrestamoRepository implements IPrestamoRepository {
                     contract.datosCredito.porcentajeInteresMoratorio,
                 totalPagar: contract.datosCredito.totalPagar,
                 fechaVencimiento: contract.datosCredito.fechaVencimiento,
-                liquidated: contract.datosCredito.liquidated
+                liquidated: contract.datosCredito.liquidated,
+                montoPagado: 0,
+                capitalPagado: 0
             },
             direccion: contract.direccionContratacion,
             statusPrestamo: contract.statusPrestamo,
             pagos: pagos.map((item) => item._id),
+            pagosRealizados: [],
             deleted: false,
             active: true
         };
